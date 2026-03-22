@@ -27,17 +27,22 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Убираем любые кастомные компоненты и фреймы куки */
-    iframe, 
-    section[data-testid="stCustomComponentV1"],
-    div[data-testid="stCustomComponentV1"],
-    [title="extra_streamlit_components.CookieManager.cookie_manager"] {
+    /* Убираем кнопку Manage app и другие элементы Streamlit */
+    button[data-testid="manage-app-button"],
+    [data-testid="stConnectionStatus"],
+    footer {
         display: none !important;
-        height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        position: absolute !important;
-        visibility: hidden !important;
+    }
+    
+    .logo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        margin-top: 30px;
+        margin-bottom: 30px;
     }
 
     /* Убираем гигантский отступ сверху страницы */
@@ -123,16 +128,13 @@ st.markdown("""
 
 # ─── Логотип (Текстовый) ─────────────────────────────────────────────────────
 
-def show_logo(width=None):
-    """Отображает стильное текстовое лого."""
-    st.markdown("""
-    <h1 style='text-align: center; color: #e3e3e3; font-family: sans-serif; 
-               letter-spacing: 4px; font-weight: 800; margin-bottom: 0px;'>
-        PR&Icirc;ME
-    </h1>
-    <p style='text-align: center; color: #8e918f; font-size: 0.8rem; margin-top: -10px; margin-bottom: 20px;'>
-        CORE BUILDER
-    </p>
+def show_logo(width=220):
+    """Отображает текстовое лого Prime Core Builder."""
+    st.markdown(f"""
+    <div class="logo-container" style="margin-bottom: 2rem; margin-top: 1rem;">
+        <div class="logo-text">PRIME</div>
+        <div class="logo-subtext">CORE BUILDER</div>
+    </div>
     """, unsafe_allow_html=True)
 
 # ─── Футер ──────────────────────────────────────────────────────────────────
@@ -274,14 +276,14 @@ with st.sidebar:
     st.divider()
     st.markdown(f"👤 **{safe_text(st.session_state.user_email)}**")
 
-if st.sidebar.button("🚪 Выйти"):
+if st.sidebar.button("Выйти"):
     st.session_state.user_id = None
     st.session_state.user_email = None
     # Удаляем куки
     cookie_manager.delete("user_id", key="delete_id")
     st.rerun()
 
-tabs = ["📝 Анализ текста", "📜 История", "📊 Дашборд", "ℹ️ О нейросети", "🗑️ Очистить историю"]
+tabs = ["Анализ текста", "История", "Дашборд", "О нейросети", "Очистить историю"]
 selected_tab = st.sidebar.radio("Навигация:", tabs)
 
 user_id = st.session_state.user_id
@@ -349,18 +351,79 @@ if selected_tab == "📝 Анализ текста":
                     st.progress(score / 100)
 
             # ── Radar-чарт ──────────────────────────────────────────
-            fig = go.Figure(data=go.Scatterpolar(
-                r=list(trait_scores.values()) + [list(trait_scores.values())[0]],
-                theta=list(trait_scores.keys()) + [list(trait_scores.keys())[0]],
-                fill="toself",
-                fillcolor="rgba(102, 126, 234, 0.25)",
-                line=dict(color="#667eea"),
-            ))
-            fig.update_layout(
-                polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
-                showlegend=False,
-                margin=dict(l=40, r=40, t=20, b=20),
-            )
+            # The original radar chart code is replaced by a chart picker section.
+            # The original radar chart was here:
+            # fig = go.Figure(data=go.Scatterpolar(
+            #     r=list(trait_scores.values()) + [list(trait_scores.values())[0]],
+            #     theta=list(trait_scores.keys()) + [list(trait_scores.keys())[0]],
+            #     fill="toself",
+            #     fillcolor="rgba(102, 126, 234, 0.25)",
+            #     line=dict(color="#667eea"),
+            # ))
+            # fig.update_layout(
+            #     polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+            #     showlegend=False,
+            #     margin=dict(l=40, r=40, t=20, b=20),
+            # )
+            # st.plotly_chart(fig, use_container_width=True)
+            st.divider()
+            st.subheader("Визуализация профиля")
+            
+            # Выбор типа графика
+            chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True, key="analysis_chart_type")
+            
+            labels = list(trait_scores.keys())
+            values = list(trait_scores.values())
+            
+            if chart_type == "Радар":
+                fig = go.Figure()
+                fig.add_trace(go.Scatterpolar(
+                    r=values + [values[0]],
+                    theta=labels + [labels[0]],
+                    fill='toself',
+                    line_color='#00d1ff',
+                    fillcolor='rgba(0, 209, 255, 0.3)'
+                ))
+                fig.update_layout(
+                    polar={
+                        "radialaxis": {"visible": True, "range": [0, 100], "color": "white", "gridcolor": "#444"},
+                        "angularaxis": {"color": "white", "gridcolor": "#444"},
+                        "bgcolor": "rgba(0,0,0,0)"
+                    },
+                    showlegend=False,
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    margin={"l": 40, "r": 40, "t": 20, "b": 20}
+                )
+            elif chart_type == "Столбцы":
+                fig = go.Figure(go.Bar(
+                    x=labels,
+                    y=values,
+                    marker_color='#00d1ff',
+                    text=[f"{v:.0f}" for v in values],
+                    textposition='auto',
+                ))
+                fig.update_layout(
+                    yaxis={"range": [0, 105], "gridcolor": "#333", "color": "white"},
+                    xaxis={"color": "white"},
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    margin={"l": 20, "r": 20, "t": 20, "b": 20}
+                )
+            else: # Круговая
+                fig = go.Figure(go.Pie(
+                    labels=labels,
+                    values=values,
+                    hole=.4,
+                    marker=dict(colors=['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff'])
+                ))
+                fig.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    margin={"l": 20, "r": 20, "t": 20, "b": 20},
+                    legend={"font": {"color": "white"}}
+                )
+                
             st.plotly_chart(fig, use_container_width=True)
 
             st.divider()
@@ -443,37 +506,65 @@ elif selected_tab == "📊 Дашборд":
         total = stats.pop("total_analyses", 0)
         st.metric("Всего анализов", total)
 
-        # Средний radar-чарт
-        trait_vals = [stats.get(t, 0) for t in TRAITS]
-        fig = go.Figure(data=go.Scatterpolar(
-            r=trait_vals + [trait_vals[0]],
-            theta=TRAITS + [TRAITS[0]],
-            fill="toself",
-            fillcolor="rgba(118, 75, 162, 0.3)",
-            line=dict(color="#764ba2", width=2),
-        ))
-        fig.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
-            showlegend=False,
-            title="Средний профиль по всем анализам",
-            margin=dict(l=40, r=40, t=60, b=20),
-        )
+        st.divider()
+        st.subheader("Визуализация профиля")
+        
+        # Выбор типа графика
+        chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True)
+        
+        labels = list(stats.keys())
+        values = list(stats.values())
+        
+        if chart_type == "Радар":
+            fig = go.Figure()
+            fig.add_trace(go.Scatterpolar(
+                r=values + [values[0]],
+                theta=labels + [labels[0]],
+                fill='toself',
+                line_color='#00d1ff',
+                fillcolor='rgba(0, 209, 255, 0.3)'
+            ))
+            fig.update_layout(
+                polar=dict(
+                    radialaxis=dict(visible=True, range=[0, 100], color="white", gridcolor="#444"),
+                    angularaxis=dict(color="white", gridcolor="#444"),
+                    bgcolor="rgba(0,0,0,0)"
+                ),
+                showlegend=False,
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                margin=dict(l=40, r=40, t=20, b=20)
+            )
+        elif chart_type == "Столбцы":
+            fig = go.Figure(go.Bar(
+                x=labels,
+                y=values,
+                marker_color='#00d1ff',
+                text=[f"{v:.0f}" for v in values], # Added formatting for text
+                textposition='auto',
+            ))
+            fig.update_layout(
+                yaxis=dict(range=[0, 105], gridcolor="#333", color="white"),
+                xaxis=dict(color="white"),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                margin=dict(l=20, r=20, t=20, b=20)
+            )
+        else: # Круговая
+            fig = go.Figure(go.Pie(
+                labels=labels,
+                values=values,
+                hole=.4,
+                marker=dict(colors=['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff']) # Added more colors for 7 traits
+            ))
+            fig.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                margin=dict(l=20, r=20, t=20, b=20),
+                legend=dict(font=dict(color="white"))
+            )
+            
         st.plotly_chart(fig, use_container_width=True)
-
-        # Столбчатая диаграмма
-        colors = ["#2ecc71" if v >= 70 else "#f39c12" if v >= 40 else "#e74c3c"
-                  for v in trait_vals]
-        bar_fig = go.Figure(data=go.Bar(
-            x=TRAITS, y=trait_vals,
-            marker_color=colors,
-            text=[f"{v:.0f}" for v in trait_vals],
-            textposition="auto",
-        ))
-        bar_fig.update_layout(
-            yaxis=dict(range=[0, 100], title="Средний балл"),
-            margin=dict(l=40, r=20, t=20, b=40),
-        )
-        st.plotly_chart(bar_fig, use_container_width=True)
 
         # Сильные и слабые стороны
         sorted_traits = sorted(stats.items(), key=lambda x: x[1], reverse=True)

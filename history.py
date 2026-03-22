@@ -22,9 +22,11 @@ def save_score(user_id: int, text_preview: str, full_analysis: dict, score: floa
     if not sb: return False
     
     try:
+        # Убеждаемся, что text_preview это строка
+        preview = str(text_preview)
         data = {
             "user_id": user_id,
-            "text_preview": text_preview[:200] + ("..." if len(text_preview) > 200 else ""),
+            "text_preview": preview[:200] + ("..." if len(preview) > 200 else ""),
             "full_analysis": json.dumps(full_analysis, ensure_ascii=False),
             "score": float(score),
             "created_at": datetime.now().isoformat()
@@ -43,7 +45,6 @@ def get_user_scores(user_id: int):
     try:
         res = sb.table("history").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
         
-        # Превращаем JSON-строки обратно в словари
         scores = []
         for row in res.data:
             scores.append({
@@ -67,3 +68,11 @@ def delete_user_history(user_id: int):
         return True
     except Exception:
         return False
+
+# ─── Алиасы для обратной совместимости ──────────────────────────────────────
+
+def load_history(user_id: int):
+    return get_user_scores(user_id)
+
+def delete_history(user_id: int):
+    return delete_user_history(user_id)
