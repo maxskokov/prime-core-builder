@@ -14,67 +14,103 @@ st.set_page_config(
     page_title="Prime Core Builder",
     page_icon="🏙️",
     layout="centered",
-    initial_sidebar_state="expanded", # Меню теперь открыто сразу
+    initial_sidebar_state="expanded",
 )
 
 # ─── Адаптивный CSS ─────────────────────────────────────────────────────────
 
 st.markdown("""
 <style>
-    /* Убираем верхний отступ и меню */
+    /* Убираем лишнее */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Светлая тема по умолчанию для совпадения с логотипом */
+    /* Темная тема Gemini */
     .stApp {
-        background-color: #f7f9fc;
+        background-color: #131314;
+        color: #e3e3e3;
     }
     
-    /* Текст заголовков */
+    /* Сайдбар */
+    [data-testid="stSidebar"] {
+        background-color: #1e1f20;
+        border-right: 1px solid #333;
+    }
+    
+    /* Карточка с логотипом в сайдбаре */
+    .logo-container {
+        background: white;
+        padding: 15px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Заголовки */
     h1, h2, h3, .stSubheader {
-        color: #0c3d5e !important;
+        color: #e3e3e3 !important;
+        font-family: 'Google Sans', 'Segoe UI', sans-serif;
     }
-    
-    /* Стилизуем контейнер авторизации */
+
+    /* Контейнер авторизации как карточка */
     .auth-container {
         max-width: 450px;
         margin: 0 auto;
         padding: 40px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        background: #1e1f20;
+        border-radius: 28px;
+        border: 1px solid #333;
         text-align: center;
     }
+
+    /* Поля ввода (Инпуты) */
+    .stTextInput > div > div > input, .stTextArea > div > div > textarea {
+        background-color: #131314 !important;
+        color: white !important;
+        border-radius: 16px !important;
+        border: 1px solid #3c4043 !important;
+    }
     
-    /* Красивые кнопки */
+    /* Кнопки в стиле Gemini */
     div.stButton > button {
-        background-color: #0c3d5e;
-        color: white;
-        border-radius: 8px;
-        border: none;
-        padding: 12px;
-        transition: 0.3s;
+        background-color: #1e1f20;
+        color: #a8c7fa;
+        border-radius: 20px;
+        border: 1px solid #3c4043;
+        padding: 10px 24px;
+        font-weight: 500;
+        transition: 0.2s;
     }
     div.stButton > button:hover {
-        background-color: #1a5a8a;
-        transform: translateY(-2px);
+        background-color: #333;
+        border-color: #a8c7fa;
+        color: white;
     }
-    
-    /* Убираем зазоры */
+
+    /* Главная кнопка действия */
+    div.stButton > button[kind="primary"] {
+        background-color: #a8c7fa;
+        color: #062e6f;
+        border: none;
+    }
+
     .block-container {
-        padding-top: 2rem !important;
+        padding-top: 3rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ─── Логотип ────────────────────────────────────────────────────────────────
 
-def show_logo(use_container_width=True):
-    """Отображает логотип, если файл существует."""
+def show_logo(width=200):
+    """Отображает логотип внутри стильной карточки."""
     import os
     if os.path.exists("logo.png"):
-        st.image("logo.png", use_container_width=use_container_width)
+        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+        st.image("logo.png", width=width)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ─── Футер ──────────────────────────────────────────────────────────────────
 
@@ -111,7 +147,7 @@ def show_auth_screen():
 
     col1, col2, col3 = st.columns([0.1, 1, 0.1])
     with col2:
-        show_logo() # Авто-ширина под контейнер
+        show_logo(width=280) # Лого на экране логина всё еще должно быть заметным
     
     st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True)
@@ -170,14 +206,10 @@ if st.session_state.user_id is None:
     show_footer()
     st.stop()
 
-# ─── Логотип на главной ─────────────────────────────────────────────────────
-show_logo(use_container_width=False) # Небольшой логотип сверху основной части
-st.markdown("<br>", unsafe_allow_html=True)
-
 # ─── Сайдбар ────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    show_logo()
+    show_logo(width=160) # Компактный логотип для меню
     st.divider()
     st.markdown(f"👤 **{safe_text(st.session_state.user_email)}**")
 
