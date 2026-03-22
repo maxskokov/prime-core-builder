@@ -70,18 +70,10 @@ st.markdown("""
         font-family: 'Google Sans', 'Segoe UI', sans-serif;
     }
 
-    /* Контейнер авторизации - используем селектор Streamlit контейнера */
-    [data-testid="stVerticalBlock"] > div:has(.auth-box) {
-        background: #1e1f20;
-        padding: 40px;
-        border-radius: 28px;
-        border: 1px solid #333;
-        margin-top: 50px;
-    }
-
     .auth-box {
         text-align: center;
         width: 100%;
+        padding: 20px;
     }
 
     /* Поля ввода (Инпуты) */
@@ -177,10 +169,7 @@ def safe_text(text: str) -> str:
 
 def show_auth_screen():
     """Форма входа / регистрации."""
-    # Метка для CSS селектора
-    st.markdown("<div class='auth-box'></div>", unsafe_allow_html=True)
-    
-    show_logo(width=220)
+    show_logo()
     
     st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True, label_visibility="collapsed")
