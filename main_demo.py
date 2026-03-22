@@ -134,11 +134,10 @@ if "login_attempts" not in st.session_state:
 
 # ─── Управление Cookies ───────────────────────────────────────────────────
 
-@st.cache_resource
-def get_manager():
-    return stx.CookieManager()
+if "cookie_manager" not in st.session_state:
+    st.session_state.cookie_manager = stx.CookieManager()
 
-cookie_manager = get_manager()
+cookie_manager = st.session_state.cookie_manager
 
 # Инициализация для авто-входа
 if "cookie_checked" not in st.session_state:
