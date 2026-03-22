@@ -75,15 +75,18 @@ st.markdown("""
         font-family: 'Google Sans', 'Segoe UI', sans-serif;
     }
 
-    /* Контейнер авторизации как карточка */
-    .auth-container {
-        max-width: 450px;
-        margin: 0 auto;
-        padding: 40px;
+    /* Контейнер авторизации - используем селектор Streamlit контейнера */
+    [data-testid="stVerticalBlock"] > div:has(.auth-box) {
         background: #1e1f20;
+        padding: 40px;
         border-radius: 28px;
         border: 1px solid #333;
+        margin-top: 50px;
+    }
+
+    .auth-box {
         text-align: center;
+        width: 100%;
     }
 
     /* Поля ввода (Инпуты) */
@@ -126,12 +129,12 @@ st.markdown("""
 # ─── Логотип ────────────────────────────────────────────────────────────────
 
 def show_logo(width=200):
-    """Отображает логотип без возможности клика."""
+    """Отображает логотип (центровка через колонки)."""
     import os
     if os.path.exists("logo.png"):
-        st.markdown('<div class="logo-container logo-img">', unsafe_allow_html=True)
-        st.image("logo.png", width=width)
-        st.markdown('</div>', unsafe_allow_html=True)
+        _, mid, _ = st.columns([1, 2, 1])
+        with mid:
+            st.image("logo.png", width=width)
 
 # ─── Футер ──────────────────────────────────────────────────────────────────
 
@@ -188,14 +191,13 @@ def safe_text(text: str) -> str:
 
 def show_auth_screen():
     """Форма входа / регистрации."""
-    st.markdown("<div class='auth-container'>", unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns([0.1, 1, 0.1])
-    with col2:
-        show_logo(width=280) # Лого на экране логина всё еще должно быть заметным
+    # Метка для CSS селектора
+    st.markdown("<div class='auth-box'></div>", unsafe_allow_html=True)
+    
+    show_logo(width=220)
     
     st.markdown("<br>", unsafe_allow_html=True)
-    auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True)
+    auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True, label_visibility="collapsed")
 
     email = st.text_input("📧 Email", placeholder="user@example.com", max_chars=254)
     password = st.text_input("🔒 Пароль", type="password", placeholder="Минимум 6 символов", max_chars=128)
@@ -243,8 +245,9 @@ def show_auth_screen():
                 # При регистрации тоже можно сохранить ID если мы сразу заходим
             else:
                 st.error(msg)
-
-    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Вторая метка для закрытия (необязательно, но помогает структуре)
+    # st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ─── Проверка авторизации ───────────────────────────────────────────────────
