@@ -27,6 +27,16 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
+    /* Прячем сам компонент куки, чтобы не было полосок */
+    section[data-testid="stCustomComponentV1"] {
+        display: none;
+    }
+
+    /* Отключаем клики по логотипу */
+    .logo-img img {
+        pointer-events: none;
+    }
+
     /* Темная тема Gemini */
     .stApp {
         background-color: #131314;
@@ -39,12 +49,10 @@ st.markdown("""
         border-right: 1px solid #333;
     }
     
-    /* Карточка с логотипом в сайдбаре */
+    /* Контейнер с логотипом (теперь прозрачный) */
     .logo-container {
-        background: white;
-        padding: 15px;
-        border-radius: 16px;
-        margin-bottom: 20px;
+        padding: 10px;
+        margin-bottom: 10px;
         display: flex;
         justify-content: center;
     }
@@ -106,10 +114,10 @@ st.markdown("""
 # ─── Логотип ────────────────────────────────────────────────────────────────
 
 def show_logo(width=200):
-    """Отображает логотип внутри стильной карточки."""
+    """Отображает логотип без возможности клика."""
     import os
     if os.path.exists("logo.png"):
-        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+        st.markdown('<div class="logo-container logo-img">', unsafe_allow_html=True)
         st.image("logo.png", width=width)
         st.markdown('</div>', unsafe_allow_html=True)
 
