@@ -182,10 +182,7 @@ if "cookie_manager" not in st.session_state:
 cookie_manager = st.session_state.cookie_manager
 
 # Авто-вход через куки
-if "cookie_checked" not in st.session_state:
-    st.session_state.cookie_checked = False
-
-if not st.session_state.cookie_checked and not st.session_state.user_id:
+if st.session_state.user_id is None:
     c_user_id = cookie_manager.get("user_id")
     if c_user_id:
         try:
@@ -193,9 +190,9 @@ if not st.session_state.cookie_checked and not st.session_state.user_id:
             if u_info:
                 st.session_state.user_id = u_info["id"]
                 st.session_state.user_email = u_info["email"]
+                st.rerun()
         except:
             pass
-    st.session_state.cookie_checked = True
 
 # ─── Google Sheets (Бессмертный резерв - больше не нужен) ────────────────
 conn_gs = None 
@@ -307,7 +304,7 @@ user_id = st.session_state.user_id
 # ВКЛАДКА 1: Анализ текста
 # ═══════════════════════════════════════════════════════════════════════════
 
-if selected_tab == "📝 Анализ текста":
+if selected_tab == "Анализ текста":
     st.subheader("Введите текст для анализа")
     st.caption(f"Опишите свои навыки, подход к работе, ситуации из жизни (макс. {MAX_TEXT_LENGTH} символов).")
 
@@ -470,7 +467,7 @@ if selected_tab == "📝 Анализ текста":
 # ВКЛАДКА 2: История
 # ═══════════════════════════════════════════════════════════════════════════
 
-elif selected_tab == "📜 История":
+elif selected_tab == "История":
     st.subheader("📜 История анализов")
     df = history.load_history(user_id)
 
@@ -511,7 +508,7 @@ elif selected_tab == "📜 История":
 # ВКЛАДКА 3: Дашборд
 # ═══════════════════════════════════════════════════════════════════════════
 
-elif selected_tab == "📊 Дашборд":
+elif selected_tab == "Дашборд":
     st.subheader("📊 Персональный дашборд")
     stats = history.get_stats(user_id)
 
@@ -597,7 +594,7 @@ elif selected_tab == "📊 Дашборд":
 # ВКЛАДКА 4: О нейросети
 # ═══════════════════════════════════════════════════════════════════════════
 
-elif selected_tab == "ℹ️ О нейросети":
+elif selected_tab == "О нейросети":
     st.subheader("ℹ️ О Prime Core Builder")
 
     st.markdown("""
@@ -643,7 +640,7 @@ elif selected_tab == "ℹ️ О нейросети":
 # ВКЛАДКА 5: Очистить историю
 # ═══════════════════════════════════════════════════════════════════════════
 
-elif selected_tab == "🗑️ Очистить историю":
+elif selected_tab == "Очистить историю":
     st.subheader("🗑️ Очистить историю анализов")
     st.warning("⚠️ Это действие удалит **все** ваши результаты анализов. Данные невозможно восстановить.")
 
