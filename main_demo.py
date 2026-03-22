@@ -12,43 +12,53 @@ import auth
 
 st.set_page_config(
     page_title="Prime Core Builder",
-    page_icon="💻",
-    layout="wide",
-    initial_sidebar_state="expanded",
+    page_icon="🏙️",
+    layout="centered", # Центрируем контент для стиля «визитки»
+    initial_sidebar_state="collapsed",
 )
 
 # ─── Адаптивный CSS ─────────────────────────────────────────────────────────
 
 st.markdown("""
 <style>
-    /* Адаптив для мобильных */
-    @media (max-width: 768px) {
-        .block-container { padding: 1rem 0.5rem !important; }
-        h1 { font-size: 1.5rem !important; }
-        .stTextArea textarea { font-size: 14px !important; }
+    /* Убираем верхний отступ и меню */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Светлая тема по умолчанию для совпадения с логотипом */
+    .stApp {
+        background-color: #f7f9fc;
     }
-    /* Основной стиль */
-    h1.main-title {
-        text-align: center;
-        font-family: 'Segoe UI', monospace;
-        font-weight: bold;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        padding: 0.5rem 0;
-    }
-    .score-card {
-        padding: 0.8rem;
-        border-radius: 10px;
-        margin-bottom: 0.5rem;
-        border-left: 4px solid;
-    }
+    
+    /* Стилизуем контейнер авторизации */
     .auth-container {
-        max-width: 400px;
-        margin: 2rem auto;
-        padding: 2rem;
-        border-radius: 12px;
-        border: 1px solid #333;
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 40px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    
+    /* Красивые кнопки */
+    div.stButton > button {
+        background-color: #0c3d5e;
+        color: white;
+        border-radius: 8px;
+        border: none;
+        padding: 12px;
+        transition: 0.3s;
+    }
+    div.stButton > button:hover {
+        background-color: #1a5a8a;
+        transform: translateY(-2px);
+    }
+    
+    /* Убираем зазоры */
+    .block-container {
+        padding-top: 2rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -60,8 +70,6 @@ def show_logo(width=250):
     import os
     if os.path.exists("logo.png"):
         st.image("logo.png", width=width)
-    else:
-        st.markdown("<h1 class='main-title'>💻 Prime Core Builder</h1>", unsafe_allow_html=True)
 
 # ─── Футер ──────────────────────────────────────────────────────────────────
 
@@ -96,9 +104,9 @@ def show_auth_screen():
     """Форма входа / регистрации."""
     st.markdown("<div class='auth-container'>", unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([0.1, 1, 0.1])
     with col2:
-        show_logo(width=280)
+        show_logo(width=None) # Авто-ширина под контейнер
     
     st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True)
