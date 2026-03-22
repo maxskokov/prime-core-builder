@@ -512,8 +512,8 @@ elif selected_tab == "Дашборд":
     st.subheader("📊 Персональный дашборд")
     stats = history.get_stats(user_id)
 
-    if not stats:
-        st.info("Пока нет данных. Проведите хотя бы один анализ.")
+    if not stats or stats.get("total_analyses", 0) == 0:
+        st.info("У вас пока нет сохраненных анализов. Проведите свой первый анализ в первой вкладке!")
     else:
         total = stats.pop("total_analyses", 0)
         st.metric("Всего анализов", total)
@@ -522,7 +522,7 @@ elif selected_tab == "Дашборд":
         st.subheader("Визуализация профиля")
         
         # Выбор типа графика
-        chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True)
+        chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True, key="dashboard_chart_type")
         
         labels = list(stats.keys())
         values = list(stats.values())
@@ -537,43 +537,43 @@ elif selected_tab == "Дашборд":
                 fillcolor='rgba(0, 209, 255, 0.3)'
             ))
             fig.update_layout(
-                polar=dict(
-                    radialaxis=dict(visible=True, range=[0, 100], color="white", gridcolor="#444"),
-                    angularaxis=dict(color="white", gridcolor="#444"),
-                    bgcolor="rgba(0,0,0,0)"
-                ),
+                polar={
+                    "radialaxis": {"visible": True, "range": [0, 100], "color": "white", "gridcolor": "#444"},
+                    "angularaxis": {"color": "white", "gridcolor": "#444"},
+                    "bgcolor": "rgba(0,0,0,0)"
+                },
                 showlegend=False,
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=40, r=40, t=20, b=20)
+                margin={"l": 40, "r": 40, "t": 20, "b": 20}
             )
         elif chart_type == "Столбцы":
             fig = go.Figure(go.Bar(
                 x=labels,
                 y=values,
                 marker_color='#00d1ff',
-                text=[f"{v:.0f}" for v in values], # Added formatting for text
+                text=[f"{v:.0f}" for v in values],
                 textposition='auto',
             ))
             fig.update_layout(
-                yaxis=dict(range=[0, 105], gridcolor="#333", color="white"),
-                xaxis=dict(color="white"),
+                yaxis={"range": [0, 105], "gridcolor": "#333", "color": "white"},
+                xaxis={"color": "white"},
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=20, r=20, t=20, b=20)
+                margin={"l": 20, "r": 20, "t": 20, "b": 20}
             )
         else: # Круговая
             fig = go.Figure(go.Pie(
                 labels=labels,
                 values=values,
                 hole=.4,
-                marker=dict(colors=['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff']) # Added more colors for 7 traits
+                marker=dict(colors=['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff'])
             ))
             fig.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=20, r=20, t=20, b=20),
-                legend=dict(font=dict(color="white"))
+                margin={"l": 20, "r": 20, "t": 20, "b": 20},
+                legend={"font": {"color": "white"}}
             )
             
         st.plotly_chart(fig, use_container_width=True)
