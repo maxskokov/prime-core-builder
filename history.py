@@ -69,10 +69,14 @@ def delete_user_history(user_id: int):
     except Exception:
         return False
 
+import pandas as pd
+
 # ─── Алиасы для обратной совместимости ──────────────────────────────────────
 
-def load_history(user_id: int):
-    return get_user_scores(user_id)
+def load_history(user_id: int) -> pd.DataFrame:
+    """Загружает историю и возвращает её в виде DataFrame для UI."""
+    scores = get_user_scores(user_id)
+    return pd.DataFrame(scores)
 
 def delete_history(user_id: int):
     return delete_user_history(user_id)
