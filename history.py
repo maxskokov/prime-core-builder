@@ -69,6 +69,28 @@ def delete_user_history(user_id: int):
     except Exception:
         return False
 
+def get_stats(user_id: int) -> dict:
+    """Высчитывает средние баллы по всем анализам пользователя."""
+    scores = get_user_scores(user_id)
+    if not scores:
+        return {"total_analyses": 0}
+        
+    stats = {"total_analyses": len(scores)}
+    all_traits = {}
+    
+    for row in scores:
+        analysis = row.get("full_analysis", {})
+        if isinstance(analysis, dict):
+            for trait, val in analysis.items():
+                if trait != "_meta" and isinstance(val, (int, float)):
+                    if trait not in all_traits: all_traits[trait] = []
+                    all_traits[trait].append(val)
+                    
+    for trait, vals in all_traits.items():
+        stats[trait] = sum(vals) / len(vals)
+        
+    return stats
+
 import pandas as pd
 
 # ─── Алиасы для обратной совместимости ──────────────────────────────────────
