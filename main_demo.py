@@ -27,9 +27,20 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Прячем сам компонент куки, чтобы не было полосок */
-    section[data-testid="stCustomComponentV1"] {
-        display: none;
+    /* Прячем сам компонент куки и любые пустые блоки сверху */
+    iframe[title="extra_streamlit_components.CookieManager.cookie_manager"],
+    div[data-testid="stCustomComponentV1"],
+    div.element-container:has(iframe[title="extra_streamlit_components.CookieManager.cookie_manager"]) {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Убираем гигантский отступ сверху страницы */
+    .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
     }
 
     /* Отключаем клики по логотипу */
@@ -49,12 +60,13 @@ st.markdown("""
         border-right: 1px solid #333;
     }
     
-    /* Контейнер с логотипом (теперь прозрачный) */
+    /* Контейнер с логотипом (максимально компактный) */
     .logo-container {
-        padding: 10px;
-        margin-bottom: 10px;
+        padding: 0;
+        margin: 0 auto 15px auto;
         display: flex;
         justify-content: center;
+        width: 100%;
     }
 
     /* Заголовки */
