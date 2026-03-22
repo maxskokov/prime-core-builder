@@ -7,6 +7,8 @@ from analysis import (
 )
 import history
 import auth
+import extra_streamlit_components as stx
+from streamlit_gsheets import GSheetsConnection
 
 # ─── Настройки страницы ─────────────────────────────────────────────────────
 
@@ -26,10 +28,17 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Убираем любые кастомные компоненты и фреймы */
-    iframe, section[data-testid="stCustomComponentV1"] {
+    /* Убираем любые кастомные компоненты и фреймы куки */
+    iframe, 
+    section[data-testid="stCustomComponentV1"],
+    div[data-testid="stCustomComponentV1"],
+    [title="extra_streamlit_components.CookieManager.cookie_manager"] {
         display: none !important;
         height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: absolute !important;
+        visibility: hidden !important;
     }
 
     /* Убираем гигантский отступ сверху страницы */
@@ -144,9 +153,40 @@ if "user_id" not in st.session_state:
 if "user_email" not in st.session_state:
     st.session_state.user_email = None
 
+# Инициализация попыток входа
 if "login_attempts" not in st.session_state:
     st.session_state.login_attempts = 0
     st.session_state.last_attempt_time = None
+
+# ─── Управление Cookies ───────────────────────────────────────────────────
+
+if "cookie_manager" not in st.session_state:
+    st.session_state.cookie_manager = stx.CookieManager()
+
+cookie_manager = st.session_state.cookie_manager
+
+# Авто-вход через куки
+if "cookie_checked" not in st.session_state:
+    st.session_state.cookie_checked = False
+
+if not st.session_state.cookie_checked and not st.session_state.user_id:
+    c_user_id = cookie_manager.get("user_id")
+    if c_user_id:
+        try:
+            u_info = auth.get_user_by_id(int(c_user_id))
+            if u_info:
+                st.session_state.user_id = u_info["id"]
+                st.session_state.user_email = u_info["email"]
+        except:
+            pass
+    st.session_state.cookie_checked = True
+
+# ─── Google Sheets (Бессмертная история) ───────────────────────────────────
+
+try:
+    conn_gs = st.connection("gsheets", type=GSheetsConnection)
+except Exception:
+    conn_gs = None
 
 
 if "user_id" not in st.session_state:
@@ -196,6 +236,8 @@ def show_auth_screen():
                 auth.reset_attempts(st.session_state)
                 st.session_state.user_id = user_id
                 st.session_state.user_email = email.strip().lower()
+                # Сохраняем куки
+                cookie_manager.set("user_id", str(user_id), key="set_id_login")
                 st.rerun()
             else:
                 st.error(msg)
@@ -240,6 +282,8 @@ with st.sidebar:
 if st.sidebar.button("🚪 Выйти"):
     st.session_state.user_id = None
     st.session_state.user_email = None
+    # Удаляем куки
+    cookie_manager.delete("user_id", key="delete_id")
     st.rerun()
 
 tabs = ["📝 Анализ текста", "📜 История", "📊 Дашборд", "ℹ️ О нейросети", "🗑️ Очистить историю"]
