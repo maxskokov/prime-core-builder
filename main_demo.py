@@ -53,7 +53,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-title'>💻 Prime Core Builder</h1>", unsafe_allow_html=True)
+# ─── Логотип ────────────────────────────────────────────────────────────────
+
+def show_logo(width=250):
+    """Отображает логотип, если файл существует."""
+    import os
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=width)
+    else:
+        st.markdown("<h1 class='main-title'>💻 Prime Core Builder</h1>", unsafe_allow_html=True)
+
+# ─── Футер ──────────────────────────────────────────────────────────────────
+
+def show_footer():
+    """Отображает футер с дисклеймером."""
+    st.markdown("""
+    <div style='text-align: center; color: gray; font-size: 0.8rem; margin-top: 3rem; padding-bottom: 1rem;'>
+        © 2026 Prime Core Builder | <b>AI can make mistakes.</b> Check important info.
+    </div>
+    """, unsafe_allow_html=True)
 
 # ─── Инициализация session_state ────────────────────────────────────────────
 
@@ -78,6 +96,11 @@ def show_auth_screen():
     """Форма входа / регистрации."""
     st.markdown("<div class='auth-container'>", unsafe_allow_html=True)
 
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        show_logo(width=280)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True)
 
     email = st.text_input("📧 Email", placeholder="user@example.com", max_chars=254)
@@ -131,11 +154,15 @@ def show_auth_screen():
 
 if st.session_state.user_id is None:
     show_auth_screen()
+    show_footer()
     st.stop()
 
 # ─── Сайдбар ────────────────────────────────────────────────────────────────
 
-st.sidebar.markdown(f"👤 **{safe_text(st.session_state.user_email)}**")
+with st.sidebar:
+    show_logo(width=180)
+    st.divider()
+    st.markdown(f"👤 **{safe_text(st.session_state.user_email)}**")
 
 if st.sidebar.button("🚪 Выйти"):
     st.session_state.user_id = None
@@ -410,3 +437,6 @@ elif selected_tab == "🗑️ Очистить историю":
             st.success(f"✅ Удалено {deleted} записей.")
         else:
             st.info("История уже пуста.")
+
+# ─── Финальный футер для всех страниц ───────────────────────────────────────
+show_footer()
