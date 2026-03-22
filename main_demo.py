@@ -13,8 +13,8 @@ import auth
 st.set_page_config(
     page_title="Prime Core Builder",
     page_icon="🏙️",
-    layout="centered", # Центрируем контент для стиля «визитки»
-    initial_sidebar_state="collapsed",
+    layout="centered",
+    initial_sidebar_state="expanded", # Меню теперь открыто сразу
 )
 
 # ─── Адаптивный CSS ─────────────────────────────────────────────────────────
@@ -29,6 +29,11 @@ st.markdown("""
     /* Светлая тема по умолчанию для совпадения с логотипом */
     .stApp {
         background-color: #f7f9fc;
+    }
+    
+    /* Текст заголовков */
+    h1, h2, h3, .stSubheader {
+        color: #0c3d5e !important;
     }
     
     /* Стилизуем контейнер авторизации */
@@ -164,6 +169,10 @@ if st.session_state.user_id is None:
     show_auth_screen()
     show_footer()
     st.stop()
+
+# ─── Логотип на главной ─────────────────────────────────────────────────────
+show_logo(use_container_width=False) # Небольшой логотип сверху основной части
+st.markdown("<br>", unsafe_allow_html=True)
 
 # ─── Сайдбар ────────────────────────────────────────────────────────────────
 
