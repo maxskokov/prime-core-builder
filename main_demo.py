@@ -155,7 +155,7 @@ if "user_email" not in st.session_state:
 # Инициализация попыток входа
 if "login_attempts" not in st.session_state:
     st.session_state.login_attempts = 0
-    st.session_state.last_attempt_time = None
+    st.session_state.last_attempt_time = 0.0
 
 # ─── Управление Cookies ───────────────────────────────────────────────────
 
