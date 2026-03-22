@@ -8,7 +8,6 @@ from analysis import (
 import history
 import auth
 import extra_streamlit_components as stx
-from streamlit_gsheets import GSheetsConnection
 
 # ─── Настройки страницы ─────────────────────────────────────────────────────
 
@@ -181,12 +180,8 @@ if not st.session_state.cookie_checked and not st.session_state.user_id:
             pass
     st.session_state.cookie_checked = True
 
-# ─── Google Sheets (Бессмертная история) ───────────────────────────────────
-
-try:
-    conn_gs = st.connection("gsheets", type=GSheetsConnection)
-except Exception:
-    conn_gs = None
+# ─── Google Sheets (Бессмертный резерв - больше не нужен) ────────────────
+conn_gs = None 
 
 
 if "user_id" not in st.session_state:
