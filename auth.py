@@ -115,6 +115,10 @@ def reset_attempts(state: dict):
     state["login_attempts"] = 0
     state["last_attempt_time"] = 0
 
+def record_attempt(state: dict):
+    """Алиас для обратной совместимости."""
+    increment_attempts(state)
+
 def increment_attempts(state: dict):
     """Увеличивает счетчик при ошибке."""
     state["login_attempts"] = state.get("login_attempts", 0) + 1
