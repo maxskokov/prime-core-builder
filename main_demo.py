@@ -7,6 +7,7 @@ from analysis import (
 )
 import history
 import auth
+import extra_streamlit_components as stx
 
 # ─── Настройки страницы ─────────────────────────────────────────────────────
 
@@ -131,6 +132,31 @@ if "login_attempts" not in st.session_state:
     st.session_state.login_attempts = 0
     st.session_state.last_attempt_time = None
 
+# ─── Управление Cookies ───────────────────────────────────────────────────
+
+@st.cache_resource
+def get_manager():
+    return stx.CookieManager()
+
+cookie_manager = get_manager()
+
+# Инициализация для авто-входа
+if "cookie_checked" not in st.session_state:
+    st.session_state.cookie_checked = False
+
+if not st.session_state.cookie_checked and not st.session_state.user_id:
+    # Пытаемся получить куки
+    c_user_id = cookie_manager.get("user_id")
+    if c_user_id:
+        try:
+            u_info = auth.get_user_by_id(int(c_user_id))
+            if u_info:
+                st.session_state.user_id = u_info["id"]
+                st.session_state.user_email = u_info["email"]
+        except:
+            pass
+    st.session_state.cookie_checked = True
+
 
 # ─── Утилита: безопасный вывод текста ───────────────────────────────────────
 
@@ -174,6 +200,8 @@ def show_auth_screen():
                 auth.reset_attempts(st.session_state)
                 st.session_state.user_id = user_id
                 st.session_state.user_email = email.strip().lower()
+                # Сохраняем куки (на 30 дней)
+                cookie_manager.set("user_id", str(user_id), key="set_id_login")
                 st.rerun()
             else:
                 st.error(msg)
@@ -193,6 +221,7 @@ def show_auth_screen():
             success, msg = auth.register(email, password)
             if success:
                 st.success(msg + " Теперь войдите.")
+                # При регистрации тоже можно сохранить ID если мы сразу заходим
             else:
                 st.error(msg)
 
@@ -216,6 +245,8 @@ with st.sidebar:
 if st.sidebar.button("🚪 Выйти"):
     st.session_state.user_id = None
     st.session_state.user_email = None
+    # Удаляем куки
+    cookie_manager.delete("user_id", key="delete_id")
     st.rerun()
 
 tabs = ["📝 Анализ текста", "📜 История", "📊 Дашборд", "ℹ️ О нейросети", "🗑️ Очистить историю"]

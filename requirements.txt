@@ -9,3 +9,4 @@ tensorflow>=2.15.0
 pymorphy2
 pymorphy2-dicts-ru
 watchdog
+extra-streamlit-components

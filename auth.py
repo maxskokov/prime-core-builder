@@ -131,6 +131,21 @@ def login(email: str, password: str) -> tuple[bool, str, int | None]:
         conn.close()
 
 
+def get_user_by_id(user_id: int) -> dict | None:
+    """Возвращает данные пользователя по ID."""
+    conn = _get_conn()
+    try:
+        row = conn.execute(
+            "SELECT id, email FROM users WHERE id = ?",
+            (user_id,),
+        ).fetchone()
+        if row:
+            return {"id": row[0], "email": row[1]}
+        return None
+    finally:
+        conn.close()
+
+
 def check_rate_limit(state: dict) -> tuple[bool, int]:
     """
     Проверяет rate limit через session_state.
