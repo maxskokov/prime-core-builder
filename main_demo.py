@@ -41,8 +41,23 @@ st.markdown("""
         justify-content: center;
         text-align: center;
         width: 100%;
-        margin-top: 30px;
-        margin-bottom: 30px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    .logo-text {
+        font-size: 3.5rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.5rem !important;
+        line-height: 1.1;
+        color: #e3e3e3;
+        font-family: 'Google Sans', sans-serif;
+    }
+    .logo-subtext {
+        font-size: 0.75rem !important;
+        letter-spacing: 0.3rem !important;
+        color: #8e918f;
+        text-transform: uppercase;
+        margin-top: -5px;
     }
 
     /* Убираем гигантский отступ сверху страницы */
