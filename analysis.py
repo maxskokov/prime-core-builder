@@ -178,16 +178,16 @@ def analyze_text_with_meta(text: str, min_words: int = 8) -> Dict[str, Any]:
     total_hits = sum(hits.values())
 
     for trait in TRAITS:
-        base = raw[trait] + per_trait_sentiment + diversity_bonus + length_bonus
+        # Увеличим базовую оценку на 35, чтобы выдавать 60-90 за хороший текст
+        base = 35.0 + raw[trait] + per_trait_sentiment + diversity_bonus + length_bonus
 
-        # Если есть хоть одно совпадение — минимум 20
+        # Если есть хоть одно совпадение — минимум 60
         if hits[trait] > 0:
-            base = max(base, 20.0)
+            base = max(base, 60.0)
 
-        # Без совпадений — базовый «нейтральный» уровень 15-25
-        # (текст написан, но черта не упомянута)
+        # Без совпадений — базовый «нейтральный» уровень 35-45
         if hits[trait] == 0 and total_hits > 0:
-            base = max(base, 15.0)
+            base = max(base, 35.0)
 
         scores[trait] = int(_clamp(round(base), 0, 100))
 

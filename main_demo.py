@@ -460,7 +460,7 @@ if selected_tab == "Анализ текста":
                     st.caption(f"• {safe_text(s)}")
 
             # ── Сохранение ──────────────────────────────────────────
-            history.save_scores(user_id, scores)
+            history.save_scores(user_id, scores, text_input)
             st.success("✅ Результаты сохранены в вашу историю!")
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -567,7 +567,7 @@ elif selected_tab == "Дашборд":
                 labels=labels,
                 values=values,
                 hole=.4,
-                marker=dict(colors=['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff'])
+                marker={"colors": ['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff']}
             ))
             fig.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
@@ -579,7 +579,8 @@ elif selected_tab == "Дашборд":
         st.plotly_chart(fig, use_container_width=True)
 
         # Сильные и слабые стороны
-        sorted_traits = sorted(stats.items(), key=lambda x: x[1], reverse=True)
+        trait_stats = {k: v for k, v in stats.items() if isinstance(v, (int, float))}
+        sorted_traits = sorted(trait_stats.items(), key=lambda x: x[1], reverse=True)
         col1, col2 = st.columns(2)
         with col1:
             st.markdown("### 💪 Сильные стороны")

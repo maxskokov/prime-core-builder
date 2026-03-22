@@ -83,8 +83,9 @@ def get_stats(user_id: int) -> dict:
         if isinstance(analysis, dict):
             for trait, val in analysis.items():
                 if trait != "_meta" and isinstance(val, (int, float)):
-                    if trait not in all_traits: all_traits[trait] = []
-                    all_traits[trait].append(val)
+                    if trait not in all_traits: 
+                        all_traits[trait] = []
+                    all_traits[trait].append(float(val))
                     
     for trait, vals in all_traits.items():
         stats[trait] = sum(vals) / len(vals)
@@ -94,6 +95,15 @@ def get_stats(user_id: int) -> dict:
 import pandas as pd
 
 # ─── Алиасы для обратной совместимости ──────────────────────────────────────
+
+def save_scores(user_id: int, scores: dict, text_preview: str = "Анализ текста"):
+    """Алиас для обратной совместимости: сохраняет оценки и вычисляет средний балл."""
+    if "_meta" in scores:
+        overall = float(scores["_meta"].get("overall_score", 0.0))
+    else:
+        vals = [v for k, v in scores.items() if isinstance(v, (int, float))]
+        overall = float(sum(vals) / max(1, len(vals)) if vals else 0.0)
+    return save_score(user_id, text_preview, scores, overall)
 
 def load_history(user_id: int) -> pd.DataFrame:
     """Загружает историю и возвращает её в виде DataFrame для UI."""
