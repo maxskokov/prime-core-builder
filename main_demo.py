@@ -7,7 +7,6 @@ from analysis import (
 )
 import history
 import auth
-import extra_streamlit_components as stx
 
 # ─── Настройки страницы ─────────────────────────────────────────────────────
 
@@ -27,14 +26,10 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Прячем сам компонент куки и любые пустые блоки сверху */
-    iframe[title="extra_streamlit_components.CookieManager.cookie_manager"],
-    div[data-testid="stCustomComponentV1"],
-    div.element-container:has(iframe[title="extra_streamlit_components.CookieManager.cookie_manager"]) {
+    /* Убираем любые кастомные компоненты и фреймы */
+    iframe, section[data-testid="stCustomComponentV1"] {
         display: none !important;
         height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
     }
 
     /* Убираем гигантский отступ сверху страницы */
@@ -126,15 +121,19 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ─── Логотип ────────────────────────────────────────────────────────────────
+# ─── Логотип (Текстовый) ─────────────────────────────────────────────────────
 
-def show_logo(width=200):
-    """Отображает логотип (центровка через колонки)."""
-    import os
-    if os.path.exists("logo.png"):
-        _, mid, _ = st.columns([1, 2, 1])
-        with mid:
-            st.image("logo.png", width=width)
+def show_logo(width=None):
+    """Отображает стильное текстовое лого."""
+    st.markdown("""
+    <h1 style='text-align: center; color: #e3e3e3; font-family: sans-serif; 
+               letter-spacing: 4px; font-weight: 800; margin-bottom: 0px;'>
+        PR&Icirc;ME
+    </h1>
+    <p style='text-align: center; color: #8e918f; font-size: 0.8rem; margin-top: -10px; margin-bottom: 20px;'>
+        CORE BUILDER
+    </p>
+    """, unsafe_allow_html=True)
 
 # ─── Футер ──────────────────────────────────────────────────────────────────
 
@@ -150,35 +149,22 @@ def show_footer():
 
 if "user_id" not in st.session_state:
     st.session_state.user_id = None
+if "user_email" not in st.session_state:
     st.session_state.user_email = None
+
 if "login_attempts" not in st.session_state:
     st.session_state.login_attempts = 0
     st.session_state.last_attempt_time = None
 
-# ─── Управление Cookies ───────────────────────────────────────────────────
 
-if "cookie_manager" not in st.session_state:
-    st.session_state.cookie_manager = stx.CookieManager()
+if "user_id" not in st.session_state:
+    st.session_state.user_id = None
+if "user_email" not in st.session_state:
+    st.session_state.user_email = None
 
-cookie_manager = st.session_state.cookie_manager
-
-# Инициализация для авто-входа
-if "cookie_checked" not in st.session_state:
-    st.session_state.cookie_checked = False
-
-if not st.session_state.cookie_checked and not st.session_state.user_id:
-    # Пытаемся получить куки
-    c_user_id = cookie_manager.get("user_id")
-    if c_user_id:
-        try:
-            u_info = auth.get_user_by_id(int(c_user_id))
-            if u_info:
-                st.session_state.user_id = u_info["id"]
-                st.session_state.user_email = u_info["email"]
-        except:
-            pass
-    st.session_state.cookie_checked = True
-
+if "login_attempts" not in st.session_state:
+    st.session_state.login_attempts = 0
+    st.session_state.last_attempt_time = None
 
 # ─── Утилита: безопасный вывод текста ───────────────────────────────────────
 
@@ -221,8 +207,6 @@ def show_auth_screen():
                 auth.reset_attempts(st.session_state)
                 st.session_state.user_id = user_id
                 st.session_state.user_email = email.strip().lower()
-                # Сохраняем куки (на 30 дней)
-                cookie_manager.set("user_id", str(user_id), key="set_id_login")
                 st.rerun()
             else:
                 st.error(msg)
@@ -267,8 +251,6 @@ with st.sidebar:
 if st.sidebar.button("🚪 Выйти"):
     st.session_state.user_id = None
     st.session_state.user_email = None
-    # Удаляем куки
-    cookie_manager.delete("user_id", key="delete_id")
     st.rerun()
 
 tabs = ["📝 Анализ текста", "📜 История", "📊 Дашборд", "ℹ️ О нейросети", "🗑️ Очистить историю"]
