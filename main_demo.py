@@ -65,11 +65,11 @@ st.markdown("""
 
 # ─── Логотип ────────────────────────────────────────────────────────────────
 
-def show_logo(width=250):
+def show_logo(use_container_width=True):
     """Отображает логотип, если файл существует."""
     import os
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=width)
+        st.image("logo.png", use_container_width=use_container_width)
 
 # ─── Футер ──────────────────────────────────────────────────────────────────
 
@@ -106,7 +106,7 @@ def show_auth_screen():
 
     col1, col2, col3 = st.columns([0.1, 1, 0.1])
     with col2:
-        show_logo(width=None) # Авто-ширина под контейнер
+        show_logo() # Авто-ширина под контейнер
     
     st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True)
@@ -168,7 +168,7 @@ if st.session_state.user_id is None:
 # ─── Сайдбар ────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    show_logo(width=180)
+    show_logo()
     st.divider()
     st.markdown(f"👤 **{safe_text(st.session_state.user_email)}**")
 
