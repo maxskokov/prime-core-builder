@@ -13,7 +13,7 @@ import extra_streamlit_components as stx
 
 st.set_page_config(
     page_title="Prime Core Builder",
-    page_icon="🏙️",
+    page_icon="💠",
     layout="centered",
     initial_sidebar_state="expanded",
 )
@@ -782,33 +782,30 @@ elif selected_tab == "О нейросети":
     }
 
     .opal-section {
-        height: 120vh; /* Каждый бокс "задерживает" пользователя на 1.2 экрана */
+        height: 100vh; /* Каждый бокс занимает полный экран */
         position: relative;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         z-index: 10;
-        margin-bottom: -20vh; /* Легкое наложение для плавности смены */
     }
     
     .opal-sticky {
         position: sticky;
-        top: 30vh;
+        top: 25vh;
         max-width: 800px;
         margin: 0 auto;
-        padding: 3rem 4rem;
-        background: rgba(20, 20, 30, 0.4);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 30px;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        padding: 4rem 4rem;
+        background: #090a0f; /* Непрозрачный темный фон, чтобы текст снизу не просвечивал! */
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 32px;
+        box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
         text-align: center;
         color: #fff;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Эффект свечения снизу (ambient light) */
+    /* Эффект свечения снизу (ambient light), только вокруг компонента */
     .opal-sticky::after {
         content: '';
         position: absolute;
