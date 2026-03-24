@@ -22,6 +22,8 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@700;900&display=swap');
+
     /* Убираем лишнее */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
@@ -33,69 +35,61 @@ st.markdown("""
     footer {
         display: none !important;
     }
-    
-    .logo-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        width: 100%;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-    .logo-text {
-        font-size: 3.5rem !important;
-        font-weight: 800 !important;
-        letter-spacing: 0.5rem !important;
-        line-height: 1.1;
-        color: #e3e3e3;
-        font-family: 'Google Sans', sans-serif;
-    }
-    .logo-subtext {
-        font-size: 0.75rem !important;
-        letter-spacing: 0.3rem !important;
-        color: #8e918f;
-        text-transform: uppercase;
-        margin-top: -5px;
-    }
 
-    /* Убираем гигантский отступ сверху страницы */
-    .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-    }
-
-    /* Отключаем клики по логотипу */
-    .logo-img img {
-        pointer-events: none;
-    }
-
-    /* Темная тема Gemini */
+    /* Глубокий темный фон приложения с "сеткой" или радиальным градиентом */
     .stApp {
-        background-color: #131314;
+        background: radial-gradient(circle at center top, #111827 0%, #050505 100%) !important;
         color: #e3e3e3;
+        font-family: 'Inter', sans-serif;
     }
     
-    /* Сайдбар */
+    /* Стеклянный Сайдбар (Glassmorphism) */
     [data-testid="stSidebar"] {
-        background-color: #1e1f20;
-        border-right: 1px solid #333;
+        background-color: rgba(15, 20, 25, 0.45) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        border-right: 1px solid rgba(0, 209, 255, 0.15) !important;
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5) !important;
     }
     
-    /* Контейнер с логотипом (максимально компактный) */
+    /* Неоновый Логотип */
     .logo-container {
         padding: 0;
-        margin: 0 auto 15px auto;
+        margin: 0 auto 20px auto;
         display: flex;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         width: 100%;
     }
+    .logo-text {
+        font-size: 3.2rem !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.35rem !important;
+        line-height: 1.1;
+        background: linear-gradient(90deg, #00d1ff, #a200ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 20px rgba(0, 209, 255, 0.3);
+        font-family: 'Montserrat', sans-serif;
+    }
+    .logo-subtext {
+        font-size: 0.8rem !important;
+        letter-spacing: 0.25rem !important;
+        color: #a200ff;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(162, 0, 255, 0.6);
+        margin-top: -2px;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+    }
 
-    /* Заголовки */
+    /* Заголовки с легким свечением */
     h1, h2, h3, .stSubheader {
-        color: #e3e3e3 !important;
-        font-family: 'Google Sans', 'Segoe UI', sans-serif;
+        color: #ffffff !important;
+        font-family: 'Montserrat', 'Inter', sans-serif !important;
+        text-shadow: 0 0 10px rgba(0, 209, 255, 0.25);
+        font-weight: 700 !important;
     }
 
     .auth-box {
@@ -106,37 +100,106 @@ st.markdown("""
 
     /* Поля ввода (Инпуты) */
     .stTextInput > div > div > input, .stTextArea > div > div > textarea {
-        background-color: #131314 !important;
+        background-color: rgba(10, 15, 20, 0.6) !important;
         color: white !important;
-        border-radius: 16px !important;
-        border: 1px solid #3c4043 !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s ease !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+    .stTextInput > div > div > input:focus, .stTextArea > div > div > textarea:focus {
+        border-color: #00d1ff !important;
+        box-shadow: 0 0 15px rgba(0, 209, 255, 0.3) !important;
+        background-color: rgba(15, 20, 30, 0.8) !important;
     }
     
-    /* Кнопки в стиле Gemini */
+    /* Кнопки (Ключевой Cyberpunk элемент) */
     div.stButton > button {
-        background-color: #1e1f20;
-        color: #a8c7fa;
-        border-radius: 20px;
-        border: 1px solid #3c4043;
-        padding: 10px 24px;
-        font-weight: 500;
-        transition: 0.2s;
+        background: rgba(0, 209, 255, 0.05) !important;
+        color: #00d1ff !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(0, 209, 255, 0.5) !important;
+        padding: 10px 24px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        transition: all 0.3s ease-in-out !important;
+        box-shadow: 0 0 10px rgba(0, 209, 255, 0.1) !important;
+        font-family: 'Inter', sans-serif !important;
     }
     div.stButton > button:hover {
-        background-color: #333;
-        border-color: #a8c7fa;
-        color: white;
+        background: rgba(0, 209, 255, 0.15) !important;
+        box-shadow: 0 0 20px rgba(0, 209, 255, 0.5) !important;
+        border-color: #00d1ff !important;
+        transform: translateY(-2px);
     }
 
-    /* Главная кнопка действия */
+    /* Главная кнопка действия (Primary) */
     div.stButton > button[kind="primary"] {
-        background-color: #a8c7fa;
-        color: #062e6f;
-        border: none;
+        background: linear-gradient(45deg, #0099ff, #8a2be2) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(0, 209, 255, 0.4) !important;
+    }
+    div.stButton > button[kind="primary"]:hover {
+        box-shadow: 0 6px 25px rgba(0, 209, 255, 0.7) !important;
+        background: linear-gradient(45deg, #00b3ff, #9d4edd) !important;
     }
 
+    /* Стеклянные карточки результатов */
+    .score-card {
+        background: rgba(25, 30, 40, 0.5) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-left-width: 4px !important; /* Цвет бордера задается в python коде */
+        border-radius: 12px !important;
+        padding: 18px;
+        margin-bottom: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4) !important;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .score-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 209, 255, 0.15) !important;
+    }
+
+    /* Метрики (Уровень, Уверенность) */
+    [data-testid="stMetric"] {
+        background: rgba(15, 20, 30, 0.5) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(0, 209, 255, 0.2) !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        box-shadow: inset 0 0 15px rgba(0, 209, 255, 0.05), 0 4px 15px rgba(0,0,0,0.5) !important;
+        text-align: center;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #a8c7fa !important;
+        font-weight: 600 !important;
+        justify-content: center;
+    }
+    [data-testid="stMetricValue"] {
+        color: #00d1ff !important;
+        text-shadow: 0 0 15px rgba(0, 209, 255, 0.5) !important;
+        font-family: 'Montserrat', sans-serif !important;
+        font-weight: 700 !important;
+    }
+
+    /* Диалоговые окна (Auth modal) */
+    div[role="dialog"] > div {
+        background: rgba(15, 20, 25, 0.85) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(0, 209, 255, 0.3) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 209, 255, 0.1) !important;
+    }
+
+    /* Отступы */
     .block-container {
-        padding-top: 3rem !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -214,12 +277,11 @@ def safe_text(text: str) -> str:
     return html_lib.escape(str(text))
 
 
-# ─── Экран авторизации ──────────────────────────────────────────────────────
+# ─── Экран авторизации (Диалог) ─────────────────────────────────────────────
 
+@st.dialog("Вход в систему")
 def show_auth_screen():
     """Форма входа / регистрации."""
-    show_logo()
-    
     st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True, label_visibility="collapsed")
 
@@ -273,27 +335,33 @@ def show_auth_screen():
     # Вторая метка для закрытия (необязательно, но помогает структуре)
     # st.markdown("</div>", unsafe_allow_html=True)
 
-
 # ─── Проверка авторизации ───────────────────────────────────────────────────
 
-if st.session_state.user_id is None:
-    show_auth_screen()
-    show_footer()
-    st.stop()
+# Если раньше мы блокировали доступ, то теперь вход опциональный.
+# Убираем жесткую блокировку и рисуем кнопку входа сверху справа.
+
+# Топ-панель (показываем кнопку входа или профиль текущего пользователя)
+top_col1, top_col2 = st.columns([7, 3])
+with top_col2:
+    if st.session_state.user_id is None:
+        if st.button("🔑 Войти / Регистрация", use_container_width=True):
+            show_auth_screen()
+    else:
+        email_prefix = st.session_state.user_email.split("@")[0]
+        st.markdown(f"<div style='text-align: right; padding-top: 10px;'>👤 <b>{safe_text(email_prefix)}</b></div>", unsafe_allow_html=True)
 
 # ─── Сайдбар ────────────────────────────────────────────────────────────────
 
 with st.sidebar:
     show_logo(width=160) # Компактный логотип для меню
     st.divider()
-    st.markdown(f"👤 **{safe_text(st.session_state.user_email)}**")
 
-if st.sidebar.button("Выйти"):
-    st.session_state.user_id = None
-    st.session_state.user_email = None
-    # Удаляем куки
-    cookie_manager.delete("user_id", key="delete_id")
-    st.rerun()
+if st.session_state.user_id is not None:
+    if st.sidebar.button("Выйти"):
+        st.session_state.user_id = None
+        st.session_state.user_email = None
+        cookie_manager.delete("user_id", key="delete_id")
+        st.rerun()
 
 tabs = ["Анализ текста", "История", "Дашборд", "О нейросети", "Очистить историю"]
 selected_tab = st.sidebar.radio("Навигация:", tabs)
@@ -460,16 +528,21 @@ if selected_tab == "Анализ текста":
                     st.caption(f"• {safe_text(s)}")
 
             # ── Сохранение ──────────────────────────────────────────
-            history.save_scores(user_id, scores, text_input)
-            st.success("✅ Результаты сохранены в вашу историю!")
+            if user_id:
+                history.save_scores(user_id, scores, text_input)
+                st.success("✅ Результаты сохранены в вашу историю!")
+            else:
+                st.info("💡 Войдите в систему, чтобы сохранять результаты в Историю и строить Дашборд.")
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ВКЛАДКА 2: История
 # ═══════════════════════════════════════════════════════════════════════════
-
 elif selected_tab == "История":
-    st.subheader("📜 История анализов")
-    df = history.load_history(user_id)
+    if user_id is None:
+        st.warning("⚠️ Пожалуйста, войдите в систему, чтобы использовать Историю анализов.")
+    else:
+        st.subheader("📜 История анализов")
+        df = history.load_history(user_id)
 
     if df.empty:
         st.info("У вас пока нет сохранённых анализов. Перейдите во вкладку «Анализ текста».")
@@ -509,8 +582,11 @@ elif selected_tab == "История":
 # ═══════════════════════════════════════════════════════════════════════════
 
 elif selected_tab == "Дашборд":
-    st.subheader("📊 Персональный дашборд")
-    stats = history.get_stats(user_id)
+    if user_id is None:
+        st.warning("⚠️ Пожалуйста, войдите в систему, чтобы просматривать персональный Дашборд.")
+    else:
+        st.subheader("📊 Персональный дашборд")
+        stats = history.get_stats(user_id)
 
     if not stats or stats.get("total_analyses", 0) == 0:
         st.info("У вас пока нет сохраненных анализов. Проведите свой первый анализ в первой вкладке!")
@@ -642,7 +718,10 @@ elif selected_tab == "О нейросети":
 # ═══════════════════════════════════════════════════════════════════════════
 
 elif selected_tab == "Очистить историю":
-    st.subheader("🗑️ Очистить историю анализов")
+    if user_id is None:
+        st.warning("⚠️ Пожалуйста, войдите в систему для управления профилем.")
+    else:
+        st.subheader("🗑️ Очистить историю анализов")
     st.warning("⚠️ Это действие удалит **все** ваши результаты анализов. Данные невозможно восстановить.")
 
     confirm = st.checkbox("Я понимаю, что это действие необратимо")
