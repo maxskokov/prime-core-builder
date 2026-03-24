@@ -797,11 +797,11 @@ elif selected_tab == "Очистить историю":
         confirm = st.checkbox("Я понимаю, что это действие необратимо")
 
         if st.button("🗑️ Удалить всю историю", use_container_width=True, disabled=not confirm):
-            deleted = history.clear_history(user_id)
-            if deleted > 0:
-                st.success(f"✅ Удалено {deleted} записей.")
+            count = history.clear_history(user_id)
+            if count > 0:
+                st.success(f"✅ Вся ваша история успешно очищена. Удалено {count} записей.")
             else:
-                st.info("История уже пуста.")
+                st.info("История уже пуста или не удалось выполнить удаление.")
 
 # ─── Финальный футер для всех страниц ───────────────────────────────────────
 show_footer()

@@ -61,13 +61,13 @@ def get_user_scores(user_id: int):
 def delete_user_history(user_id: int):
     """Полностью очищает историю пользователя в облаке."""
     sb = _get_supabase()
-    if not sb: return False
+    if not sb: return 0
     
     try:
-        sb.table("history").delete().eq("user_id", user_id).execute()
-        return True
+        res = sb.table("history").delete().eq("user_id", user_id).execute()
+        return len(res.data) if hasattr(res, 'data') and res.data else 0
     except Exception:
-        return False
+        return 0
 
 def get_stats(user_id: int) -> dict:
     """Высчитывает средние баллы по всем анализам пользователя."""
@@ -128,4 +128,7 @@ def load_history(user_id: int) -> pd.DataFrame:
     return pd.DataFrame(flat_data)
 
 def delete_history(user_id: int):
+    return delete_user_history(user_id)
+
+def clear_history(user_id: int):
     return delete_user_history(user_id)
