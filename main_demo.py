@@ -617,31 +617,47 @@ elif selected_tab == "История":
         if df.empty:
             st.info("У вас пока нет сохранённых анализов. Перейдите во вкладку «Анализ текста».")
         else:
-            display_cols = ["timestamp"] + TRAITS
+            # Преобразуем таблицу для красоты
+            df["Дата"] = df["timestamp"].dt.strftime("%d.%m.%Y %H:%M")
+            
+            display_cols = ["Дата", "Оценка", "text_preview"] + TRAITS
             existing_cols = [c for c in display_cols if c in df.columns]
-            st.dataframe(df[existing_cols], use_container_width=True)
+            
+            # Переименовываем для UI
+            rename_map = {"text_preview": "Текст"}
+            st.dataframe(df[existing_cols].rename(columns=rename_map), use_container_width=True, hide_index=True)
 
-            # Тренд по дням
+            # Тренд всех результатов (Line chart по попыткам)
             if "timestamp" in df.columns:
-                st.subheader("📈 Тренд по дням")
-                df["date"] = df["timestamp"].dt.date
-                trait_cols = [c for c in TRAITS if c in df.columns]
-                daily_avg = df.groupby("date")[trait_cols].mean()
-
-                if not daily_avg.empty:
+                st.subheader("📈 Динамика оценок (по попыткам)")
+                # Сортируем по времени по возрастанию для правильной отрисовки слева направо
+                df_sorted = df.sort_values("timestamp").reset_index(drop=True)
+                
+                trait_cols = [c for c in TRAITS if c in df_sorted.columns]
+                
+                if not df_sorted.empty and trait_cols:
                     fig = go.Figure()
                     colors = ["#667eea", "#764ba2", "#f093fb", "#f5576c",
                               "#4facfe", "#43e97b", "#fa709a"]
-                    for i, col in enumerate(daily_avg.columns):
+                    
+                    df_sorted["Попытка"] = df_sorted.index + 1
+                    
+                    for i, col in enumerate(trait_cols):
                         fig.add_trace(go.Scatter(
-                            x=daily_avg.index, y=daily_avg[col],
+                            x=df_sorted["Попытка"], y=df_sorted[col],
                             mode="lines+markers", name=col,
                             line=dict(color=colors[i % len(colors)]),
+                            hovertemplate=f"Попытка %{{x}}<br>{col}: %{{y}}<extra></extra>"
                         ))
+                    
                     fig.update_layout(
-                        xaxis_title="Дата", yaxis_title="Средний балл",
-                        yaxis=dict(range=[0, 100]),
+                        xaxis_title="Номер попытки", yaxis_title="Балл (0-100)",
+                        yaxis=dict(range=[0, 105], gridcolor="#444", color="white"),
+                        xaxis=dict(gridcolor="#444", color="white", tickmode="linear"),
+                        paper_bgcolor="rgba(0,0,0,0)",
+                        plot_bgcolor="rgba(0,0,0,0)",
                         margin=dict(l=40, r=20, t=20, b=40),
+                        legend=dict(font=dict(color="white"))
                     )
                     st.plotly_chart(fig, use_container_width=True)
 
@@ -745,41 +761,106 @@ elif selected_tab == "О нейросети":
     st.subheader("ℹ️ О Prime Core Builder")
 
     st.markdown("""
-    **Prime Core Builder** — система анализа личностных качеств на основе текста.
+    <style>
+    .sscroll-wrapper {
+        display: flex;
+        position: relative;
+        padding-bottom: 20px;
+        margin-top: 30px;
+    }
+    .sscroll-sticky {
+        position: sticky;
+        top: 80px;
+        height: 350px;
+        width: 45%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(20, 20, 30, 0.6);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 209, 255, 0.15);
+    }
+    .sscroll-sticky h2 {
+        background: linear-gradient(90deg, #00d1ff, #f093fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        line-height: 1.2;
+    }
+    .sscroll-sticky p {
+        color: #aaa;
+        font-size: 1.1rem;
+    }
+    .sscroll-content {
+        width: 55%;
+        padding-left: 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 70vh; /* Создает скролл-эффект */
+        margin-top: 50px;
+        margin-bottom: 50vh;
+    }
+    .sscroll-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 2.5rem;
+        border-radius: 20px;
+        opacity: 0.6;
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(20px);
+    }
+    .sscroll-card:hover {
+        opacity: 1;
+        transform: translateY(0) scale(1.02);
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(0, 209, 255, 0.5);
+        box-shadow: 0 15px 35px rgba(0, 209, 255, 0.1);
+    }
+    .sscroll-card h3 {
+        margin-top: 0;
+        color: #f093fb;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    .sscroll-card p {
+        color: #e0e0e0;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    </style>
 
-    ### Как это работает?
-
-    1. **Ввод текста** — опишите свой подход к работе, навыки, ситуации из жизни
-    2. **Анализ** — система разбирает текст по 7 ключевым чертам личности
-    3. **Оценка** — каждая черта получает балл от 0 до 100
-    4. **План развития** — персональные рекомендации по улучшению слабых сторон
-
-    ### 7 черт личности
-
-    | Черта | Что оценивается |
-    |---|---|
-    | 🎯 Дисциплина | Планирование, соблюдение сроков, системность |
-    | 💪 Уверенность | Принятие решений, ответственность, самооценка |
-    | 👑 Лидерство | Организация, координация, инициативность |
-    | 💡 Креативность | Генерация идей, нестандартные решения |
-    | ❤️ Эмпатия | Понимание, поддержка, активное слушание |
-    | 🔄 Адаптивность | Гибкость, приспособляемость к изменениям |
-    | 💬 Коммуникация | Ясность изложения, навыки общения |
-
-    ### Методология
-
-    - **Лексический анализ** — поиск ключевых фраз и корней
-    - **Контекстный анализ** — учёт отрицаний и тональности
-    - **Морфологический анализ** — лемматизация (pymorphy2)
-    - **Нормализация** — взвешенная формула для шкалы 0–100
-
-    ### Безопасность
-
-    - 🔒 Пароли хешируются (PBKDF2-SHA256, 260 000 итераций)
-    - 🛡️ Защита от SQL-инъекций (параметризованные запросы)
-    - ⏱️ Защита от брутфорса (rate limiting)
-    - 🧹 Защита от XSS (экранирование ввода)
-    """)
+    <div class="sscroll-wrapper">
+        <div class="sscroll-sticky">
+            <h2>Prime Core<br>Builder</h2>
+            <p>Скролльте вниз, чтобы изучить архитектуру системы</p>
+        </div>
+        <div class="sscroll-content">
+            <div class="sscroll-card">
+                <h3>1. Глубокий лексический анализ</h3>
+                <p>Нейромодуль сканирует текст, находя ключевые слова, корневые паттерны и специфические словосочетания. Анализируется не только смысл, но и структура, тональность и лексическое разнообразие.</p>
+            </div>
+            <div class="sscroll-card">
+                <h3>2. Оценка по 7 векторам</h3>
+                <p>Дисциплина, Лидерство, Коммуникация, Эмпатия — алгоритм извлекает сложные психологические паттерны и переводит их в точные баллы от 0 до 100.</p>
+            </div>
+            <div class="sscroll-card">
+                <h3>3. Адаптивные рекомендации</h3>
+                <p>На основе выявленных зон роста система генерирует персонализированные стратегии развития и ежедневные челленджи, которые адаптируются под ваш текущий уровень.</p>
+            </div>
+            <div class="sscroll-card">
+                <h3>4. Трекинг прогресса</h3>
+                <p>Ваши данные безопасно сохраняются в облаке (Supabase с PBKDF2-SHA256 хешированием паролей). Наблюдайте за динамикой своего роста на Дашбордах!</p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.caption("Версия 2.0 • Prime Core Builder")
 
