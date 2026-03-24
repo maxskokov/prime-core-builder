@@ -762,104 +762,121 @@ elif selected_tab == "О нейросети":
 
     st.markdown("""
     <style>
-    .sscroll-wrapper {
-        display: flex;
-        position: relative;
-        padding-bottom: 20px;
-        margin-top: 30px;
-    }
-    .sscroll-sticky {
-        position: sticky;
-        top: 80px;
-        height: 350px;
-        width: 45%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: rgba(20, 20, 30, 0.6);
-        backdrop-filter: blur(15px);
-        border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-        padding: 2rem;
+    .opal-intro {
         text-align: center;
-        box-shadow: 0 10px 40px rgba(0, 209, 255, 0.15);
+        margin-bottom: 50vh;
+        margin-top: 10vh;
     }
-    .sscroll-sticky h2 {
-        background: linear-gradient(90deg, #00d1ff, #f093fb);
+    .opal-intro h1 {
+        font-size: 4rem;
+        background: linear-gradient(135deg, #ffffff 0%, #a0a0b0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        line-height: 1.2;
+        line-height: 1.1;
     }
-    .sscroll-sticky p {
-        color: #aaa;
-        font-size: 1.1rem;
+    .opal-intro p {
+        font-size: 1.5rem;
+        color: #888;
+        max-width: 600px;
+        margin: 20px auto;
     }
-    .sscroll-content {
-        width: 55%;
-        padding-left: 3rem;
+
+    .opal-section {
+        height: 120vh; /* Каждый бокс "задерживает" пользователя на 1.2 экрана */
+        position: relative;
         display: flex;
         flex-direction: column;
-        gap: 70vh; /* Создает скролл-эффект */
-        margin-top: 50px;
-        margin-bottom: 50vh;
+        justify-content: flex-start;
+        z-index: 10;
+        margin-bottom: -20vh; /* Легкое наложение для плавности смены */
     }
-    .sscroll-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 2.5rem;
-        border-radius: 20px;
-        opacity: 0.6;
-        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        transform: translateY(20px);
+    
+    .opal-sticky {
+        position: sticky;
+        top: 30vh;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 3rem 4rem;
+        background: rgba(20, 20, 30, 0.4);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 30px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        text-align: center;
+        color: #fff;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     }
-    .sscroll-card:hover {
-        opacity: 1;
-        transform: translateY(0) scale(1.02);
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(0, 209, 255, 0.5);
-        box-shadow: 0 15px 35px rgba(0, 209, 255, 0.1);
+
+    /* Эффект свечения снизу (ambient light) */
+    .opal-sticky::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: 10%;
+        width: 80%;
+        height: 100px;
+        background: inherit;
+        filter: blur(60px);
+        opacity: 0.5;
+        z-index: -1;
+        border-radius: 50%;
     }
-    .sscroll-card h3 {
-        margin-top: 0;
-        color: #f093fb;
-        font-size: 1.8rem;
-        margin-bottom: 15px;
+
+    .opal-sticky h2 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        line-height: 1.1;
+        letter-spacing: -1px;
     }
-    .sscroll-card p {
-        color: #e0e0e0;
-        font-size: 1.1rem;
-        line-height: 1.6;
+    
+    .opal-sticky p {
+        font-size: 1.4rem;
+        color: #b0b0c0;
+        line-height: 1.5;
     }
+
+    #block1 h2 { background: linear-gradient(90deg, #00d1ff, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    #block2 h2 { background: linear-gradient(90deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    #block3 h2 { background: linear-gradient(90deg, #43e97b, #38f9d7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    #block4 h2 { background: linear-gradient(90deg, #fa709a, #fee140); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 
-    <div class="sscroll-wrapper">
-        <div class="sscroll-sticky">
-            <h2>Prime Core<br>Builder</h2>
-            <p>Скролльте вниз, чтобы изучить архитектуру системы</p>
-        </div>
-        <div class="sscroll-content">
-            <div class="sscroll-card">
-                <h3>1. Глубокий лексический анализ</h3>
-                <p>Нейромодуль сканирует текст, находя ключевые слова, корневые паттерны и специфические словосочетания. Анализируется не только смысл, но и структура, тональность и лексическое разнообразие.</p>
-            </div>
-            <div class="sscroll-card">
-                <h3>2. Оценка по 7 векторам</h3>
-                <p>Дисциплина, Лидерство, Коммуникация, Эмпатия — алгоритм извлекает сложные психологические паттерны и переводит их в точные баллы от 0 до 100.</p>
-            </div>
-            <div class="sscroll-card">
-                <h3>3. Адаптивные рекомендации</h3>
-                <p>На основе выявленных зон роста система генерирует персонализированные стратегии развития и ежедневные челленджи, которые адаптируются под ваш текущий уровень.</p>
-            </div>
-            <div class="sscroll-card">
-                <h3>4. Трекинг прогресса</h3>
-                <p>Ваши данные безопасно сохраняются в облаке (Supabase с PBKDF2-SHA256 хешированием паролей). Наблюдайте за динамикой своего роста на Дашбордах!</p>
-            </div>
+    <div class="opal-intro">
+        <h1>Скрытая механика<br>вашего текста.</h1>
+        <p>Крутите вниз, чтобы узнать, как Prime Core Builder анализирует личность.</p>
+    </div>
+
+    <div class="opal-section">
+        <div class="opal-sticky" id="block1">
+            <h2>Глубокий анализ.</h2>
+            <p>Нейромодуль не просто читает слова. Он сканирует ваш текст, находя скрытые корневые паттерны, тональность и лексическое разнообразие. Каждое слово имеет вес.</p>
         </div>
     </div>
+
+    <div class="opal-section">
+        <div class="opal-sticky" id="block2">
+            <h2>7 Векторов.</h2>
+            <p>От жесткой Дисциплины до тонкой Эмпатии — сложнейшие характеристики личности переводятся в точные, математически выверенные микро-баллы от 0 до 100.</p>
+        </div>
+    </div>
+
+    <div class="opal-section">
+        <div class="opal-sticky" id="block3">
+            <h2>Умные советы.</h2>
+            <p>Система не только оценивает, но и направляет. Получайте персонализированные стратегии развития и ежедневные челленджи, которые адаптируются под ваш текущий уровень.</p>
+        </div>
+    </div>
+
+    <div class="opal-section">
+        <div class="opal-sticky" id="block4">
+            <h2>Трекинг роста.</h2>
+            <p>Все ваши анализы безопасно сохраняются в защищенном облаке (Supabase с PBKDF2-SHA256). Наблюдайте за трендом своих оценок и фиксируйте прогресс в реальном времени!</p>
+        </div>
+    </div>
+    
+    <div style="height: 30vh;"></div> <!-- Свободное место под последним блоком -->
+
     """, unsafe_allow_html=True)
 
     st.caption("Версия 2.0 • Prime Core Builder")
