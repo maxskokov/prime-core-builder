@@ -544,38 +544,38 @@ elif selected_tab == "История":
         st.subheader("📜 История анализов")
         df = history.load_history(user_id)
 
-    if df.empty:
-        st.info("У вас пока нет сохранённых анализов. Перейдите во вкладку «Анализ текста».")
-    else:
-        display_cols = ["timestamp"] + TRAITS
-        existing_cols = [c for c in display_cols if c in df.columns]
-        st.dataframe(df[existing_cols], use_container_width=True)
+        if df.empty:
+            st.info("У вас пока нет сохранённых анализов. Перейдите во вкладку «Анализ текста».")
+        else:
+            display_cols = ["timestamp"] + TRAITS
+            existing_cols = [c for c in display_cols if c in df.columns]
+            st.dataframe(df[existing_cols], use_container_width=True)
 
-        # Тренд по дням
-        if "timestamp" in df.columns:
-            st.subheader("📈 Тренд по дням")
-            df["date"] = df["timestamp"].dt.date
-            trait_cols = [c for c in TRAITS if c in df.columns]
-            daily_avg = df.groupby("date")[trait_cols].mean()
+            # Тренд по дням
+            if "timestamp" in df.columns:
+                st.subheader("📈 Тренд по дням")
+                df["date"] = df["timestamp"].dt.date
+                trait_cols = [c for c in TRAITS if c in df.columns]
+                daily_avg = df.groupby("date")[trait_cols].mean()
 
-            if not daily_avg.empty:
-                fig = go.Figure()
-                colors = ["#667eea", "#764ba2", "#f093fb", "#f5576c",
-                          "#4facfe", "#43e97b", "#fa709a"]
-                for i, col in enumerate(daily_avg.columns):
-                    fig.add_trace(go.Scatter(
-                        x=daily_avg.index, y=daily_avg[col],
-                        mode="lines+markers", name=col,
-                        line=dict(color=colors[i % len(colors)]),
-                    ))
-                fig.update_layout(
-                    xaxis_title="Дата", yaxis_title="Средний балл",
-                    yaxis=dict(range=[0, 100]),
-                    margin=dict(l=40, r=20, t=20, b=40),
-                )
-                st.plotly_chart(fig, use_container_width=True)
+                if not daily_avg.empty:
+                    fig = go.Figure()
+                    colors = ["#667eea", "#764ba2", "#f093fb", "#f5576c",
+                              "#4facfe", "#43e97b", "#fa709a"]
+                    for i, col in enumerate(daily_avg.columns):
+                        fig.add_trace(go.Scatter(
+                            x=daily_avg.index, y=daily_avg[col],
+                            mode="lines+markers", name=col,
+                            line=dict(color=colors[i % len(colors)]),
+                        ))
+                    fig.update_layout(
+                        xaxis_title="Дата", yaxis_title="Средний балл",
+                        yaxis=dict(range=[0, 100]),
+                        margin=dict(l=40, r=20, t=20, b=40),
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
 
-        st.markdown("**💪 Совет:** Анализируйте регулярно — отслеживайте прогресс!")
+            st.markdown("**💪 Совет:** Анализируйте регулярно — отслеживайте прогресс!")
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ВКЛАДКА 3: Дашборд
@@ -588,84 +588,84 @@ elif selected_tab == "Дашборд":
         st.subheader("📊 Персональный дашборд")
         stats = history.get_stats(user_id)
 
-    if not stats or stats.get("total_analyses", 0) == 0:
-        st.info("У вас пока нет сохраненных анализов. Проведите свой первый анализ в первой вкладке!")
-    else:
-        total = stats.pop("total_analyses", 0)
-        st.metric("Всего анализов", total)
+        if not stats or stats.get("total_analyses", 0) == 0:
+            st.info("У вас пока нет сохраненных анализов. Проведите свой первый анализ в первой вкладке!")
+        else:
+            total = stats.pop("total_analyses", 0)
+            st.metric("Всего анализов", total)
 
-        st.divider()
-        st.subheader("Визуализация профиля")
-        
-        # Выбор типа графика
-        chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True, key="dashboard_chart_type")
-        
-        labels = list(stats.keys())
-        values = list(stats.values())
-        
-        if chart_type == "Радар":
-            fig = go.Figure()
-            fig.add_trace(go.Scatterpolar(
-                r=values + [values[0]],
-                theta=labels + [labels[0]],
-                fill='toself',
-                line_color='#00d1ff',
-                fillcolor='rgba(0, 209, 255, 0.3)'
-            ))
-            fig.update_layout(
-                polar={
-                    "radialaxis": {"visible": True, "range": [0, 100], "color": "white", "gridcolor": "#444"},
-                    "angularaxis": {"color": "white", "gridcolor": "#444"},
-                    "bgcolor": "rgba(0,0,0,0)"
-                },
-                showlegend=False,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                margin={"l": 40, "r": 40, "t": 20, "b": 20}
-            )
-        elif chart_type == "Столбцы":
-            fig = go.Figure(go.Bar(
-                x=labels,
-                y=values,
-                marker_color='#00d1ff',
-                text=[f"{v:.0f}" for v in values],
-                textposition='auto',
-            ))
-            fig.update_layout(
-                yaxis={"range": [0, 105], "gridcolor": "#333", "color": "white"},
-                xaxis={"color": "white"},
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                margin={"l": 20, "r": 20, "t": 20, "b": 20}
-            )
-        else: # Круговая
-            fig = go.Figure(go.Pie(
-                labels=labels,
-                values=values,
-                hole=.4,
-                marker={"colors": ['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff']}
-            ))
-            fig.update_layout(
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                margin={"l": 20, "r": 20, "t": 20, "b": 20},
-                legend={"font": {"color": "white"}}
-            )
+            st.divider()
+            st.subheader("Визуализация профиля")
             
-        st.plotly_chart(fig, use_container_width=True)
+            # Выбор типа графика
+            chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True, key="dashboard_chart_type")
+            
+            labels = list(stats.keys())
+            values = list(stats.values())
+            
+            if chart_type == "Радар":
+                fig = go.Figure()
+                fig.add_trace(go.Scatterpolar(
+                    r=values + [values[0]],
+                    theta=labels + [labels[0]],
+                    fill='toself',
+                    line_color='#00d1ff',
+                    fillcolor='rgba(0, 209, 255, 0.3)'
+                ))
+                fig.update_layout(
+                    polar={
+                        "radialaxis": {"visible": True, "range": [0, 100], "color": "white", "gridcolor": "#444"},
+                        "angularaxis": {"color": "white", "gridcolor": "#444"},
+                        "bgcolor": "rgba(0,0,0,0)"
+                    },
+                    showlegend=False,
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    margin={"l": 40, "r": 40, "t": 20, "b": 20}
+                )
+            elif chart_type == "Столбцы":
+                fig = go.Figure(go.Bar(
+                    x=labels,
+                    y=values,
+                    marker_color='#00d1ff',
+                    text=[f"{v:.0f}" for v in values],
+                    textposition='auto',
+                ))
+                fig.update_layout(
+                    yaxis={"range": [0, 105], "gridcolor": "#333", "color": "white"},
+                    xaxis={"color": "white"},
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    margin={"l": 20, "r": 20, "t": 20, "b": 20}
+                )
+            else: # Круговая
+                fig = go.Figure(go.Pie(
+                    labels=labels,
+                    values=values,
+                    hole=.4,
+                    marker={"colors": ['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff']}
+                ))
+                fig.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    margin={"l": 20, "r": 20, "t": 20, "b": 20},
+                    legend={"font": {"color": "white"}}
+                )
+                
+            st.plotly_chart(fig, use_container_width=True)
 
-        # Сильные и слабые стороны
-        trait_stats = {k: v for k, v in stats.items() if isinstance(v, (int, float))}
-        sorted_traits = sorted(trait_stats.items(), key=lambda x: x[1], reverse=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("### 💪 Сильные стороны")
-            for trait, val in sorted_traits[:3]:
-                st.markdown(f"- **{safe_text(trait)}**: {val:.0f}/100")
-        with col2:
-            st.markdown("### 🎯 Зоны роста")
-            for trait, val in sorted_traits[-3:]:
-                st.markdown(f"- **{safe_text(trait)}**: {val:.0f}/100")
+            # Сильные и слабые стороны
+            trait_stats = {k: v for k, v in stats.items() if isinstance(v, (int, float))}
+            sorted_traits = sorted(trait_stats.items(), key=lambda x: x[1], reverse=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("### 💪 Сильные стороны")
+                for trait, val in sorted_traits[:3]:
+                    st.markdown(f"- **{safe_text(trait)}**: {val:.0f}/100")
+            with col2:
+                st.markdown("### 🎯 Зоны роста")
+                for trait, val in sorted_traits[-3:]:
+                    st.markdown(f"- **{safe_text(trait)}**: {val:.0f}/100")
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ВКЛАДКА 4: О нейросети
@@ -722,16 +722,16 @@ elif selected_tab == "Очистить историю":
         st.warning("⚠️ Пожалуйста, войдите в систему для управления профилем.")
     else:
         st.subheader("🗑️ Очистить историю анализов")
-    st.warning("⚠️ Это действие удалит **все** ваши результаты анализов. Данные невозможно восстановить.")
+        st.warning("⚠️ Это действие удалит **все** ваши результаты анализов. Данные невозможно восстановить.")
 
-    confirm = st.checkbox("Я понимаю, что это действие необратимо")
+        confirm = st.checkbox("Я понимаю, что это действие необратимо")
 
-    if st.button("🗑️ Удалить всю историю", use_container_width=True, disabled=not confirm):
-        deleted = history.clear_history(user_id)
-        if deleted > 0:
-            st.success(f"✅ Удалено {deleted} записей.")
-        else:
-            st.info("История уже пуста.")
+        if st.button("🗑️ Удалить всю историю", use_container_width=True, disabled=not confirm):
+            deleted = history.clear_history(user_id)
+            if deleted > 0:
+                st.success(f"✅ Удалено {deleted} записей.")
+            else:
+                st.info("История уже пуста.")
 
 # ─── Финальный футер для всех страниц ───────────────────────────────────────
 show_footer()
