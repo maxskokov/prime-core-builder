@@ -1,153 +1,125 @@
 import streamlit as st
-import streamlit.components.v1 as components
 
 def show_about_tab():
-    # ── ПРЕМИУМ ДИЗАЙН "BENTO GLASS" 3.0 ──
-    # Используем st.components.v1.html для полной изоляции кода и плавности 60 FPS.
-    # Больше никаких ошибок с выводом "сырого" кода!
+    # ── ПРЕМИУМ ДИЗАЙН "PURE CSS REVEAL" 4.0 ──
+    # Этот вариант использует st.markdown БЕЗ отступов.
+    # Это гарантирует, что дизайн будет работать на 100% стабильно.
     
-    html_code = """
-    <!DOCTYPE html>
-    <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Montserrat:wght@900&display=swap" rel="stylesheet">
-        <style>
-            :root {
-                --cyan: #00d1ff;
-                --purple: #a200ff;
-                --bg: #050505;
-            }
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body {
-                background-color: transparent;
-                color: #fff;
-                font-family: 'Inter', sans-serif;
-                overflow-x: hidden;
-            }
+    st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Montserrat:wght@900&display=swap');
 
-            /* Контейнеры секций */
-            section {
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-                padding: 20px;
-                position: relative;
-            }
+.stApp { overflow-x: hidden; }
 
-            /* Эффект свечения на фоне */
-            .glow-bg {
-                position: absolute;
-                width: 40vw;
-                height: 40vw;
-                background: radial-gradient(circle, rgba(0, 209, 255, 0.1) 0%, transparent 70%);
-                filter: blur(80px);
-                z-index: -1;
-                pointer-events: none;
-            }
+/* Контейнеры секций */
+.about-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 20px;
+    view-timeline-name: --section-scroll;
+    view-timeline-axis: block;
+}
 
-            /* Текстовые стили */
-            .title {
-                font-family: 'Montserrat', sans-serif;
-                font-size: 4rem;
-                font-weight: 900;
-                margin-bottom: 2rem;
-                letter-spacing: -2px;
-                line-height: 1;
-                background: linear-gradient(90deg, #fff, #bbb);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
+/* Эффект свечения */
+.glow-bg {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(0, 209, 255, 0.15) 0%, transparent 70%);
+    filter: blur(50px);
+    z-index: -1;
+}
 
-            .accent-cyan { background: linear-gradient(90deg, var(--cyan), #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-            .accent-purple { background: linear-gradient(90deg, var(--purple), #ff00d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+/* Заголовки */
+.p-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    letter-spacing: -3px;
+    line-height: 1;
+    background: linear-gradient(90deg, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-            .description {
-                font-size: 1.5rem;
-                color: #aaa;
-                line-height: 1.6;
-                font-weight: 300;
-            }
+.g-cyan { background: linear-gradient(135deg, #00d1ff, #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.g-mag { background: linear-gradient(135deg, #a200ff, #ff00d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-            /* Премиум карточка (Bento/Glass) */
-            .glass-card {
-                background: rgba(20, 25, 35, 0.7);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 40px;
-                padding: 60px;
-                max-width: 900px;
-                width: 90%;
-                box-shadow: 0 50px 100px -20px rgba(0,0,0,0.6);
-                transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s ease;
-                opacity: 0.2;
-                transform: scale(0.9);
-            }
+.p-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    max-width: 700px;
+    font-weight: 300;
+}
 
-            /* Простая JS анимация появления (вместо view-timeline для совместимости) */
-            .glass-card.visible { opacity: 1; transform: scale(1); }
-
-            .scroll-hint {
-                margin-top: 50px;
-                font-size: 0.8rem;
-                letter-spacing: 4px;
-                color: var(--cyan);
-                animation: pulse 2s infinite;
-            }
-            @keyframes pulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(10px); } }
-        </style>
-    </head>
-    <body onscroll="handleScroll()">
-
-        <section>
-            <div class="glow-bg" style="top: 10%; left: 20%;"></div>
-            <h1 class="title" style="font-size: 5.5rem;">Prime Core <br><span class="accent-cyan">BUILDER</span></h1>
-            <p class="description" style="max-width: 600px;">Ваш персональный архитектор личности на базе ИИ.</p>
-            <div class="scroll-hint">ЛИСТАЙ ВНИЗ ▼</div>
-        </section>
-
-        <section>
-            <div class="glass-card" id="card1">
-                <h2 class="title accent-cyan">Глубокий Анализ.</h2>
-                <p class="description">Мы не просто считаем слова. Наша нейросеть понимает <b>контекст</b>, <b>эмоции</b> и <b>скрытые таланты</b>. Мы видим то, что пропускают обычные тесты.</p>
-            </div>
-        </section>
-
-        <section>
-            <div class="glow-bg" style="bottom: 10%; right: 20%; background: radial-gradient(circle, rgba(162, 0, 255, 0.1) 0%, transparent 70%);"></div>
-            <div class="glass-card" id="card2">
-                <h2 class="title accent-purple">7 Измерений.</h2>
-                <p class="description">Ваш потенциал разложен на <b>7 векторов развития</b>. От лидерства до креативности — создайте четкую карту своих сильных сторон.</p>
-            </div>
-        </section>
-
-        <section>
-            <div class="glass-card" id="card3">
-                <h2 class="title" style="background: linear-gradient(90deg, #fceabb, #f8b500); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">План Победы.</h2>
-                <p class="description">Система дает <b>персональные задания</b> на каждый день, помогая вам расти там, где это нужнее всего в данный момент.</p>
-            </div>
-        </section>
-
-        <script>
-            function handleScroll() {
-                const cards = document.querySelectorAll('.glass-card');
-                cards.forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    if (rect.top < window.innerHeight * 0.75) {
-                        card.classList.add('visible');
-                    }
-                });
-            }
-            window.addEventListener('scroll', handleScroll);
-            handleScroll(); // Initial check
-        </script>
-    </body>
-    </html>
-    """
+/* КАРТОЧКА С АНИМАЦИЕЙ СКРОЛЛА */
+.premium-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    padding: 50px;
+    max-width: 850px;
+    width: 90%;
     
-    # Высота для скролла
-    components.html(html_code, height=2500, scrolling=False)
+    /* Магия скролла: работает в Chrome 115+ */
+    animation: reveal-card both;
+    animation-timeline: --section-scroll;
+    animation-range: entry 25% cover 50%;
+}
+
+@keyframes reveal-card {
+    0% { opacity: 0; transform: translateY(100px) scale(0.9); filter: blur(10px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.scroll-hint {
+    margin-top: 40px;
+    color: #00d1ff;
+    letter-spacing: 5px;
+    font-size: 0.8rem;
+    animation: bounce 2s infinite;
+}
+@keyframes bounce { 0%, 100% {transform:translateY(0); opacity: 0.3;} 50% {transform:translateY(10px); opacity: 1;} }
+</style>
+
+<div class="about-section">
+    <div class="glow-bg" style="top:20%; left:10%;"></div>
+    <h1 class="p-title" style="font-size: 5.5rem;">Prime Core <span class="g-cyan">BUILDER</span></h1>
+    <p class="p-desc">Будущее анализа личности уже здесь. 🦾✨</p>
+    <div class="scroll-hint">ЛИСТАЙ ВНИЗ ▼</div>
+</div>
+
+<div class="about-section">
+    <div class="glow-bg" style="top:30%; right:10%; background: radial-gradient(circle, rgba(162, 0, 255, 0.1) 0%, transparent 70%);"></div>
+    <div class="premium-card">
+        <h2 class="p-title g-cyan">Умный Анализ.</h2>
+        <p class="p-desc">Нейросеть считывает ваш характер через текст. Это точнее, чем любой психологический опросник.</p>
+    </div>
+</div>
+
+<div class="about-section">
+    <div class="premium-card">
+        <h2 class="p-title g-mag">Ваш Потенциал.</h2>
+        <p class="p-desc">7 векторов развития, которые помогут вам понять, в чем ваша истинная сила и лидерство.</p>
+    </div>
+</div>
+
+<div class="about-section">
+    <div class="premium-card" style="border-color: rgba(255, 215, 0, 0.2);">
+        <h2 class="p-title" style="background: linear-gradient(90deg, #fceabb, #f8b500); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">План Роста.</h2>
+        <p class="p-desc">Получайте ежедневные задания, чтобы прокачать слабые стороны и закрепить успех.</p>
+    </div>
+</div>
+
+<div style="height: 30vh; display: flex; justify-content: center; align-items: center;">
+    <p style="color: #4b5563; font-size: 1.5rem;">Готовы начать? 💪🚀</p>
+</div>
+""", unsafe_allow_html=True)
