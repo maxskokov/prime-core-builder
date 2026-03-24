@@ -398,6 +398,47 @@ if selected_tab == "Анализ текста":
     )
 
     if st.button("🔍 Проанализировать", use_container_width=True) and text_input.strip():
+        # --- Анимация в стиле Gemini ---
+        loader_placeholder = st.empty()
+        with loader_placeholder.container():
+            st.markdown("""
+                <style>
+                .gemini-loader {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    text-align: center;
+                    padding: 2rem;
+                    background: linear-gradient(270deg, #a8c7fa, #00d1ff, #a200ff, #f093fb, #a8c7fa);
+                    background-size: 200% 200%;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    animation: gradientMove 2s ease infinite;
+                }
+                @keyframes gradientMove {
+                    0% {background-position: 0% 50%;}
+                    50% {background-position: 100% 50%;}
+                    100% {background-position: 0% 50%;}
+                }
+                .sparkle {
+                    display: inline-block;
+                    animation: pulse-spin 2s ease-in-out infinite;
+                }
+                @keyframes pulse-spin { 
+                    0% { transform: rotate(0deg) scale(0.8); opacity: 0.5; }
+                    50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+                    100% { transform: rotate(360deg) scale(0.8); opacity: 0.5; }
+                }
+                </style>
+                <div class="gemini-loader">
+                    <span class="sparkle">✨</span> Глубокий анализ нейросетью...
+                </div>
+            """, unsafe_allow_html=True)
+            import time
+            time.sleep(1.8) # Искусственная задержка для ВАУ-эффекта
+        
+        loader_placeholder.empty()
+        # --- Конец анимации ---
+
         scores = analyze_text_with_meta(text_input)
 
         if "message" in scores:
