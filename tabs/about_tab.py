@@ -1,132 +1,153 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 def show_about_tab():
-    # ── ПРЕМИУМ ДИЗАЙН "DEPTH SCROLL" 2.0 ──────────────────────────────────
-    # Этот модуль полностью переписан для максимального "ВАУ-эффекта" на конкурсе.
+    # ── ПРЕМИУМ ДИЗАЙН "BENTO GLASS" 3.0 ──
+    # Используем st.components.v1.html для полной изоляции кода и плавности 60 FPS.
+    # Больше никаких ошибок с выводом "сырого" кода!
     
-    st.markdown("""
-    <style>
-    /* Глобальные настройки скролла */
-    .stApp { overflow-x: hidden; }
+    html_code = """
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --cyan: #00d1ff;
+                --purple: #a200ff;
+                --bg: #050505;
+            }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+                background-color: transparent;
+                color: #fff;
+                font-family: 'Inter', sans-serif;
+                overflow-x: hidden;
+            }
 
-    /* Контейнер для блоков */
-    .scroll-section {
-        height: 100vh;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        view-timeline-name: --section-scroll;
-        view-timeline-axis: block;
-        perspective: 1000px;
-    }
+            /* Контейнеры секций */
+            section {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 20px;
+                position: relative;
+            }
 
-    /* Карточка с эффектом стекла и анимацией */
-    .premium-card {
-        max-width: 800px;
-        width: 85%;
-        padding: 4rem;
-        background: rgba(20, 25, 40, 0.4);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border: 1px solid rgba(0, 209, 255, 0.15);
-        border-radius: 50px;
-        text-align: center;
-        
-        /* Плавное появление и исчезновение при скролле */
-        animation: card-appear both;
-        animation-timeline: --section-scroll;
-        animation-range: entry 15% cover 50%;
-        
-        box-shadow: 0 40px 100px -30px rgba(0, 209, 255, 0.2);
-        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
+            /* Эффект свечения на фоне */
+            .glow-bg {
+                position: absolute;
+                width: 40vw;
+                height: 40vw;
+                background: radial-gradient(circle, rgba(0, 209, 255, 0.1) 0%, transparent 70%);
+                filter: blur(80px);
+                z-index: -1;
+                pointer-events: none;
+            }
 
-    @keyframes card-appear {
-        from { 
-            opacity: 0; 
-            transform: translateZ(-200px) translateY(100px) rotateX(10deg); 
-            filter: blur(15px);
-        }
-        to { 
-            opacity: 1; 
-            transform: translateZ(0) translateY(0) rotateX(0deg); 
-            filter: blur(0);
-        }
-    }
+            /* Текстовые стили */
+            .title {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 4rem;
+                font-weight: 900;
+                margin-bottom: 2rem;
+                letter-spacing: -2px;
+                line-height: 1;
+                background: linear-gradient(90deg, #fff, #bbb);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
 
-    /* Заголовки */
-    .p-title {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 3.5rem;
-        font-weight: 900;
-        margin-bottom: 2rem;
-        letter-spacing: -2px;
-        line-height: 1;
-    }
+            .accent-cyan { background: linear-gradient(90deg, var(--cyan), #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .accent-purple { background: linear-gradient(90deg, var(--purple), #ff00d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    .p-text {
-        font-family: 'Inter', sans-serif;
-        font-size: 1.4rem;
-        color: #d1d5db;
-        line-height: 1.6;
-        font-weight: 300;
-    }
+            .description {
+                font-size: 1.5rem;
+                color: #aaa;
+                line-height: 1.6;
+                font-weight: 300;
+            }
 
-    /* Градиенты для жюри */
-    .g-cyan { background: linear-gradient(135deg, #00d1ff, #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .g-mag   { background: linear-gradient(135deg, #a200ff, #ff00d1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .g-gold  { background: linear-gradient(135deg, #fceabb, #f8b500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            /* Премиум карточка (Bento/Glass) */
+            .glass-card {
+                background: rgba(20, 25, 35, 0.7);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 40px;
+                padding: 60px;
+                max-width: 900px;
+                width: 90%;
+                box-shadow: 0 50px 100px -20px rgba(0,0,0,0.6);
+                transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s ease;
+                opacity: 0.2;
+                transform: scale(0.9);
+            }
 
-    /* Декоративные частицы на фоне */
-    .bg-glow {
-        position: absolute;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(0, 209, 255, 0.15) 0%, transparent 70%);
-        border-radius: 50%;
-        z-index: -1;
-        filter: blur(50px);
-    }
-    </style>
+            /* Простая JS анимация появления (вместо view-timeline для совместимости) */
+            .glass-card.visible { opacity: 1; transform: scale(1); }
 
-    <!-- ПРИВЕТСТВИЕ -->
-    <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative;">
-        <div class="bg-glow" style="top: 20%; left: 30%;"></div>
-        <div class="bg-glow" style="bottom: 10%; right: 20%; background: radial-gradient(circle, rgba(162, 0, 255, 0.1) 0%, transparent 70%);"></div>
-        
-        <h1 style="font-size: 5rem; font-weight: 900; letter-spacing: -3px; margin-bottom: 0;">Prime Core <span class="g-cyan">BUILDER</span></h1>
-        <p style="color: #6b7280; font-size: 1.5rem; margin-top: 10px; font-weight: 300;">Ваш персональный архитектор личности на базе ИИ.</p>
-        <div style="margin-top: 40px; animation: bounce 2s infinite; color: #00d1ff; font-size: 0.9rem; letter-spacing: 5px;">СКРОЛЛ ВНИЗ ▼</div>
-    </div>
+            .scroll-hint {
+                margin-top: 50px;
+                font-size: 0.8rem;
+                letter-spacing: 4px;
+                color: var(--cyan);
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(10px); } }
+        </style>
+    </head>
+    <body onscroll="handleScroll()">
 
-    <!-- БЛОК 1: ПОНЯТНО О ТЕХНОЛОГИИ -->
-    <div class="scroll-section">
-        <div class="premium-card">
-            <h2 class="p-title g-cyan">Как это работает?</h2>
-            <p class="p-text">Забудьте про скучные тесты. Мы анализируем <b>ваш реальный текст</b> — то, как вы мыслите и выражаете идеи. Нейросеть находит скрытые таланты, которые вы могли не замечать.</p>
-        </div>
-    </div>
+        <section>
+            <div class="glow-bg" style="top: 10%; left: 20%;"></div>
+            <h1 class="title" style="font-size: 5.5rem;">Prime Core <br><span class="accent-cyan">BUILDER</span></h1>
+            <p class="description" style="max-width: 600px;">Ваш персональный архитектор личности на базе ИИ.</p>
+            <div class="scroll-hint">ЛИСТАЙ ВНИЗ ▼</div>
+        </section>
 
-    <!-- БЛОК 2: 7 ХАРАКТЕРИСТИК -->
-    <div class="scroll-section">
-        <div class="premium-card">
-            <h2 class="p-title g-mag">7 Измерений.</h2>
-            <p class="p-text">Мы оцениваем вас по семи ключевым направлениям: от <b>лидерских качеств</b> до <b>креативного мышления</b>. Это позволяет создать максимально точную цифровую модель вашего потенциала.</p>
-        </div>
-    </div>
+        <section>
+            <div class="glass-card" id="card1">
+                <h2 class="title accent-cyan">Глубокий Анализ.</h2>
+                <p class="description">Мы не просто считаем слова. Наша нейросеть понимает <b>контекст</b>, <b>эмоции</b> и <b>скрытые таланты</b>. Мы видим то, что пропускают обычные тесты.</p>
+            </div>
+        </section>
 
-    <!-- БЛОК 3: ПРАКТИЧЕСКАЯ ПОЛЬЗА ДЛЯ ЖЮРИ -->
-    <div class="scroll-section">
-        <div class="premium-card">
-            <h2 class="p-title g-gold">Ваш План Роста.</h2>
-            <p class="p-text">Система не просто ставит оценки, а дает <b>реальные советы</b> на каждый день. Это ваш личный тренер, который помогает становиться лучше с каждым новым анализом.</p>
-        </div>
-    </div>
+        <section>
+            <div class="glow-bg" style="bottom: 10%; right: 20%; background: radial-gradient(circle, rgba(162, 0, 255, 0.1) 0%, transparent 70%);"></div>
+            <div class="glass-card" id="card2">
+                <h2 class="title accent-purple">7 Измерений.</h2>
+                <p class="description">Ваш потенциал разложен на <b>7 векторов развития</b>. От лидерства до креативности — создайте четкую карту своих сильных сторон.</p>
+            </div>
+        </section>
 
-    <!-- ФИНАЛ -->
-    <div style="height: 60vh; display: flex; justify-content: center; align-items: center; text-align: center;">
-        <h3 style="font-size: 2.5rem; font-weight: 700; color: #4b5563;">Готовы начать трансформацию? 🚀</h3>
-    </div>
-    """, unsafe_allow_html=True)
+        <section>
+            <div class="glass-card" id="card3">
+                <h2 class="title" style="background: linear-gradient(90deg, #fceabb, #f8b500); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">План Победы.</h2>
+                <p class="description">Система дает <b>персональные задания</b> на каждый день, помогая вам расти там, где это нужнее всего в данный момент.</p>
+            </div>
+        </section>
+
+        <script>
+            function handleScroll() {
+                const cards = document.querySelectorAll('.glass-card');
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    if (rect.top < window.innerHeight * 0.75) {
+                        card.classList.add('visible');
+                    }
+                });
+            }
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); // Initial check
+        </script>
+    </body>
+    </html>
+    """
+    
+    # Высота для скролла
+    components.html(html_code, height=2500, scrolling=False)
