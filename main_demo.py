@@ -13,7 +13,7 @@ import extra_streamlit_components as stx
 
 st.set_page_config(
     page_title="Prime Core Builder",
-    page_icon="💠",
+    page_icon="C:/Users/Макс/.gemini/antigravity/brain/fe0a601a-9ebd-45d7-9e9c-bc85d37890ed/gemini_style_favicon_blue_1774362843282.png",
     layout="centered",
     initial_sidebar_state="expanded",
 )
@@ -463,10 +463,12 @@ if selected_tab == "Анализ текста":
             # ── Уровень и уверенность ───────────────────────────────
             col1, col2 = st.columns(2)
             with col1:
-                st.metric("Ваш уровень", level)
+                st.markdown(f"**Ваш уровень**")
+                st.markdown(f"<h3 style='margin:0; color:#00d1ff; text-shadow:0 0 15px rgba(0,209,255,0.4);'>{level}</h3>", unsafe_allow_html=True)
             with col2:
                 conf = meta.get("confidence", 0)
-                st.metric("Уверенность анализа", f"{int(conf * 100)}%")
+                st.markdown(f"**Уверенность анализа**")
+                st.markdown(f"<h3 style='margin:0; color:#f093fb;'>{int(conf * 100)}%</h3>", unsafe_allow_html=True)
 
             # ── Достижения ──────────────────────────────────────────
             if achievements:
@@ -758,7 +760,8 @@ elif selected_tab == "Дашборд":
 # ═══════════════════════════════════════════════════════════════════════════
 
 elif selected_tab == "О нейросети":
-    st.subheader("ℹ️ О Prime Core Builder")
+    # Убираем стандартный подзаголовок со значком 'i' и делаем чистый заголовок
+    st.markdown("<h2 style='margin-bottom: 2rem;'>О Prime Core Builder</h2>", unsafe_allow_html=True)
 
     st.markdown("""
     <style>
