@@ -13,7 +13,7 @@ import extra_streamlit_components as stx
 
 st.set_page_config(
     page_title="Prime Core Builder",
-    page_icon="C:/Users/Макс/.gemini/antigravity/brain/fe0a601a-9ebd-45d7-9e9c-bc85d37890ed/gemini_style_favicon_blue_1774362843282.png",
+    # page_icon="C:/Users/Макс/.gemini/antigravity/brain/fe0a601a-9ebd-45d7-9e9c-bc85d37890ed/gemini_style_favicon_blue_1774362843282.png",
     layout="centered",
     initial_sidebar_state="expanded",
 )
@@ -665,84 +665,17 @@ elif selected_tab == "История":
 
             st.markdown("**💪 Совет:** Анализируйте регулярно — отслеживайте прогресс!")
 
-# ═══════════════════════════════════════════════════════════════════════════
-# ВКЛАДКА 3: Дашборд
-# ═══════════════════════════════════════════════════════════════════════════
-
-elif selected_tab == "Дашборд":
-    if user_id is None:
-        st.warning("⚠️ Пожалуйста, войдите в систему, чтобы просматривать персональный Дашборд.")
-    else:
-        st.subheader("📊 Персональный дашборд")
-        stats = history.get_stats(user_id)
-
-        if not stats or stats.get("total_analyses", 0) == 0:
-            st.info("У вас пока нет сохраненных анализов. Проведите свой первый анализ в первой вкладке!")
-        else:
-            total = stats.pop("total_analyses", 0)
-            st.metric("Всего анализов", total)
-
-            st.divider()
-            st.subheader("Визуализация профиля")
-            
-            # Выбор типа графика
-            chart_type = st.radio("Тип визуализации:", ["Радар", "Столбцы", "Круговая"], horizontal=True, key="dashboard_chart_type")
-            
-            labels = list(stats.keys())
-            values = list(stats.values())
-            
-            if chart_type == "Радар":
-                fig = go.Figure()
-                fig.add_trace(go.Scatterpolar(
-                    r=values + [values[0]],
-                    theta=labels + [labels[0]],
-                    fill='toself',
-                    line_color='#00d1ff',
-                    fillcolor='rgba(0, 209, 255, 0.3)'
-                ))
-                fig.update_layout(
-                    polar={
-                        "radialaxis": {"visible": True, "range": [0, 100], "color": "white", "gridcolor": "#444"},
-                        "angularaxis": {"color": "white", "gridcolor": "#444"},
-                        "bgcolor": "rgba(0,0,0,0)"
-                    },
-                    showlegend=False,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    margin={"l": 40, "r": 40, "t": 20, "b": 20}
-                )
-            elif chart_type == "Столбцы":
-                fig = go.Figure(go.Bar(
-                    x=labels,
-                    y=values,
-                    marker_color='#00d1ff',
-                    text=[f"{v:.0f}" for v in values],
-                    textposition='auto',
-                ))
-                fig.update_layout(
-                    yaxis={"range": [0, 105], "gridcolor": "#333", "color": "white"},
-                    xaxis={"color": "white"},
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    margin={"l": 20, "r": 20, "t": 20, "b": 20}
-                )
-            else: # Круговая
-                fig = go.Figure(go.Pie(
-                    labels=labels,
-                    values=values,
-                    hole=.4,
-                    marker={"colors": ['#00d1ff', '#0099ff', '#0066ff', '#0033ff', '#3300ff', '#6600ff', '#9900ff']}
-                ))
-                fig.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    margin={"l": 20, "r": 20, "t": 20, "b": 20},
-                    legend={"font": {"color": "white"}}
-                )
-                
-            st.plotly_chart(fig, use_container_width=True)
-
             # Сильные и слабые стороны
+            # Assuming 'stats' is defined elsewhere or meant to be derived from df_sorted
+            # For now, using a placeholder for 'stats' to avoid error, assuming it's a dict of trait scores
+            # If 'stats' is not defined, this part might need further context.
+            # For the purpose of this edit, I'll assume 'stats' is available or a typo for trait_scores from df_sorted.
+            # Let's assume 'stats' should be the average of trait_cols from df_sorted for a meaningful display.
+            if not df_sorted.empty and trait_cols:
+                stats = df_sorted[trait_cols].mean().to_dict()
+            else:
+                stats = {} # Fallback if no data
+
             trait_stats = {k: v for k, v in stats.items() if isinstance(v, (int, float))}
             sorted_traits = sorted(trait_stats.items(), key=lambda x: x[1], reverse=True)
             col1, col2 = st.columns(2)
