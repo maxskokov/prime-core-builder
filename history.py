@@ -108,7 +108,24 @@ def save_scores(user_id: int, scores: dict, text_preview: str = "Анализ т
 def load_history(user_id: int) -> pd.DataFrame:
     """Загружает историю и возвращает её в виде DataFrame для UI."""
     scores = get_user_scores(user_id)
-    return pd.DataFrame(scores)
+    if not scores:
+        return pd.DataFrame()
+        
+    flat_data = []
+    for row in scores:
+        flat_row = {
+            "timestamp": pd.to_datetime(row["created_at"]),
+            "text_preview": row["text_preview"],
+            "Оценка": row["score"]
+        }
+        analysis = row.get("full_analysis", {})
+        if isinstance(analysis, dict):
+            for trait, val in analysis.items():
+                if trait != "_meta" and isinstance(val, (int, float)):
+                    flat_row[trait] = val
+        flat_data.append(flat_row)
+        
+    return pd.DataFrame(flat_data)
 
 def delete_history(user_id: int):
     return delete_user_history(user_id)

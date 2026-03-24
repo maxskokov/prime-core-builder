@@ -440,6 +440,18 @@ if selected_tab == "Анализ текста":
         # --- Конец анимации ---
 
         scores = analyze_text_with_meta(text_input)
+        st.session_state.current_analysis = scores
+        st.session_state.current_text = text_input
+        
+        # Сохраняем в историю ОДИН РАЗ, при нажатии на кнопку
+        if user_id and "message" not in scores:
+            history.save_scores(user_id, scores, text_input)
+            st.session_state.analysis_saved = True
+        else:
+            st.session_state.analysis_saved = False
+
+    if st.session_state.get("current_analysis"):
+        scores = st.session_state.current_analysis
 
         if "message" in scores:
             st.warning(scores["message"])
@@ -582,12 +594,15 @@ if selected_tab == "Анализ текста":
                 for s in suggestions:
                     st.caption(f"• {safe_text(s)}")
 
-            # ── Сохранение ──────────────────────────────────────────
-            if user_id:
-                history.save_scores(user_id, scores, text_input)
+            # ── Очистка / Сообщения о сохранении ────────────────────
+            if st.session_state.get("analysis_saved"):
                 st.success("✅ Результаты сохранены в вашу историю!")
-            else:
-                st.info("💡 Войдите в систему, чтобы сохранять результаты в Историю и строить Дашборд.")
+            elif user_id is None:
+                st.info("💡 Войдите в систему, чтобы сохранять результаты в Историю.")
+
+            if st.button("❌ Закрыть результаты", use_container_width=True):
+                st.session_state.current_analysis = None
+                st.rerun()
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ВКЛАДКА 2: История
