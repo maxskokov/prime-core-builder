@@ -281,6 +281,17 @@ def safe_text(text: str) -> str:
 @st.dialog("Вход в систему")
 def show_auth_screen():
     """Форма входа / регистрации."""
+    if "auth_success" not in st.session_state:
+        st.session_state.auth_success = False
+
+    # Если уже вошли, показываем кнопку продолжить
+    if st.session_state.auth_success:
+        st.success("✅ Вход успешен! Настройки сохранены.")
+        if st.button("➡️ ПРОДОЛЖИТЬ", type="primary", use_container_width=True):
+            st.session_state.auth_success = False
+            st.rerun()
+        return
+
     st.markdown("<br>", unsafe_allow_html=True)
     auth_mode = st.radio("", ["Вход", "Регистрация"], horizontal=True, label_visibility="collapsed")
 
@@ -306,11 +317,13 @@ def show_auth_screen():
                 auth.reset_attempts(st.session_state)
                 st.session_state.user_id = user_id
                 st.session_state.user_email = email.strip().lower()
-                # Сохраняем куки и даем Streamlit время отрисовать компонент перед перезагрузкой
+                
+                # Сохраняем куки
                 cookie_manager.set("user_id", str(user_id), key="set_id_login")
-                st.success("✅ Вход успешен!")
-                if st.button("Нажмите здесь, чтобы продолжить", type="primary", use_container_width=True):
-                    st.rerun()
+                
+                # Меняем стейт окна на успешный и перезагружаем диалог
+                st.session_state.auth_success = True
+                st.rerun()
             else:
                 st.error(msg)
 
