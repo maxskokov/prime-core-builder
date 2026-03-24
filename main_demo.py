@@ -27,7 +27,6 @@ st.markdown("""
     /* Убираем лишнее */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
     
     /* Убираем кнопку Manage app и другие элементы Streamlit */
     button[data-testid="manage-app-button"],
