@@ -306,9 +306,11 @@ def show_auth_screen():
                 auth.reset_attempts(st.session_state)
                 st.session_state.user_id = user_id
                 st.session_state.user_email = email.strip().lower()
-                # Сохраняем куки
+                # Сохраняем куки и даем Streamlit время отрисовать компонент перед перезагрузкой
                 cookie_manager.set("user_id", str(user_id), key="set_id_login")
-                st.rerun()
+                st.success("✅ Вход успешен!")
+                if st.button("Нажмите здесь, чтобы продолжить", type="primary", use_container_width=True):
+                    st.rerun()
             else:
                 st.error(msg)
 
