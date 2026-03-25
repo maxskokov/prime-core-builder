@@ -111,9 +111,12 @@ animation: pulse-shield 3s infinite;
 </style>
 <div class="obsidian-section">
 <div class="pulse-orb" style="top: -10%; left: 20%;"></div>
-<div class="obsidian-label">Передовые Технологии</div>
-<h1 class="obsidian-h1">Создаем <br>Будущее.</h1>
-<p class="obsidian-p">Prime Core Builder — это симбиоз нейронауки и искусственного интеллекта, созданный для раскрытия вашего истинного потенциала.</p>
+<div class="lottie-container" style="width: 300px; height: 300px; margin-bottom: 20px;">
+    <iframe src="https://lottie.host/embed/84c3b7f1-2856-4b8c-85a0-044439c719e5/f1vB67z87H.json" style="border: none; width: 100%; height: 100%;"></iframe>
+</div>
+<div class="obsidian-label">Интеллект Будущего</div>
+<h1 class="obsidian-h1">Prime Core <br>Builder.</h1>
+<p class="obsidian-p">Симбиоз нейросетевого анализа и психометрики, созданный для раскрытия вашего истинного потенциала через текст.</p>
 </div>
 <div class="obsidian-section">
 <div class="obsidian-label">Архитектура Системы</div>
