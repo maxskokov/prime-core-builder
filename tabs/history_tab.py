@@ -8,30 +8,33 @@ def show_history_tab(user_id):
 
     st.subheader("📜 Ваша история анализов")
     
-    rows = history.get_user_history(user_id)
+    scores = history.get_user_scores(user_id)
     
-    if not rows:
+    if not scores:
         st.info("У вас пока нет сохраненных анализов. Попробуйте провести первый анализ во вкладке 'Анализ текста'!")
         return
 
-    st.write(f"Найдено записей: **{len(rows)}**")
+    st.write(f"Найдено записей: **{len(scores)}**")
 
-    for row in rows:
-        # row: (id, user_id, overall_score, confidence, traits_json, text_sample, created_at)
-        date_str = row[6][:16].replace("T", " ")
-        with st.expander(f"📅 {date_str} — Общий балл: {row[2]}"):
-            st.markdown(f"**Текст:** {row[5][:200]}...")
-            st.markdown(f"**Уверенность:** {int(row[3] * 100)}%")
+    for row in scores:
+        # row: {id, text_preview, full_analysis, score, created_at}
+        date_str = str(row["created_at"])[:16].replace("T", " ")
+        with st.expander(f"📅 {date_str} — Общий балл: {row['score']}"):
+            st.markdown(f"**Текст:** {row['text_preview']}")
             
-            import json
-            try:
-                traits = json.loads(row[4])
+            analysis = row["full_analysis"]
+            if isinstance(analysis, dict) and "_meta" in analysis:
+                conf = analysis["_meta"].get("confidence", 0)
+                st.markdown(f"**Уверенность:** {int(conf * 100)}%")
+                
+                # Отображаем характеристики
+                traits = {k: v for k, v in analysis.items() if k != "_meta" and isinstance(v, (int, float))}
                 cols = st.columns(3)
                 for i, (trait, val) in enumerate(traits.items()):
                     with cols[i % 3]:
                         st.metric(trait, val)
-            except:
-                st.error("Ошибка при чтении данных оценок.")
+            else:
+                st.info("Детальный анализ недоступен для этой записи.")
 
 def show_clear_history_tab(user_id):
     if user_id is None:

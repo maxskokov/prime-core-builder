@@ -10,15 +10,18 @@ def show_dashboard_tab(user_id):
 
     st.subheader("📊 Дашборд развития")
     
-    rows = history.get_user_history(user_id)
-    if not rows:
+    scores_list = history.get_user_scores(user_id)
+    if not scores_list:
         st.info("У вас пока нет сохраненных анализов. Чтобы увидеть графики развития, проведите хотя бы 2-3 анализа!")
         return
 
     # Подготовка данных (сортируем по дате для графиков)
-    # row: (id, user_id, overall_score, confidence, traits_json, text_sample, created_at)
-    dates = [row[6][:10] for row in rows]
-    overall_scores = [row[2] for row in rows]
+    # scores_list: [{id, text_preview, full_analysis, score, created_at}, ...]
+    # Сортировка по времени (на всякий случай, если база вернула не так)
+    scores_list.sort(key=lambda x: str(x["created_at"]))
+
+    dates = [str(row["created_at"])[:10] for row in scores_list]
+    overall_scores = [row["score"] for row in scores_list]
     
     # ── 1) Общий тренд ────────────
     st.markdown("### 📈 Динамика общего балла")
@@ -33,14 +36,13 @@ def show_dashboard_tab(user_id):
     traits_total = {}
     traits_count = {}
     
-    for row in rows:
-        try:
-            traits = json.loads(row[4])
-            for t, v in traits.items():
-                traits_total[t] = traits_total.get(t, 0) + v
-                traits_count[t] = traits_count.get(t, 0) + 1
-        except:
-            pass
+    for row in scores_list:
+        analysis = row["full_analysis"]
+        if isinstance(analysis, dict):
+            for t, v in analysis.items():
+                if t != "_meta" and isinstance(v, (int, float)):
+                    traits_total[t] = traits_total.get(t, 0) + v
+                    traits_count[t] = traits_count.get(t, 0) + 1
 
     if traits_total:
         trait_stats = {t: traits_total[t] / traits_count[t] for t in traits_total}
