@@ -57,10 +57,7 @@ def register(email: str, password: str) -> tuple[bool, str]:
                 # Но для школьной презентации мы будем использовать email как связку,
                 # либо UUID если ты готов к миграции типов.
                 
-                # Пока что просто уведомляем об успехе
-                return True, "Регистрация успешна! Проверьте вкладку Authentication в панели Supabase."
-            except: pass
-            return True, "Успешная регистрация!"
+            return True, "Регистрация успешна! Теперь вы можете войти."
         
         return False, "Ошибка при регистрации в Supabase."
     except Exception as e:

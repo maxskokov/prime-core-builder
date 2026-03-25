@@ -9,7 +9,6 @@ from tabs import analysis_tab, history_tab, dashboard_tab, about_tab
 # ─── Настройки страницы ─────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Prime Core Builder",
-    page_icon="💠",
     layout="centered",
     initial_sidebar_state="expanded",
 )
