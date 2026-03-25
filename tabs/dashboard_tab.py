@@ -46,12 +46,13 @@ def show_dashboard_tab(user_id):
     
     fig.update_layout(
         yaxis={"range": [0, 110], "gridcolor": "rgba(255,255,255,0.1)", "color": "white", "title": "Балл"},
-        xaxis={"gridcolor": "rgba(255,255,255,0.05)", "color": "white", "title": "Порядковый номер анализа"},
+        xaxis={"gridcolor": "rgba(255,255,255,0.05)", "color": "white", "title": "Анализы (по порядку)"},
         paper_bgcolor="rgba(0,0,0,0)", 
         plot_bgcolor="rgba(0,0,0,0)", 
         margin={"l": 20, "r": 20, "t": 20, "b": 20},
         hovermode="x unified"
     )
+    fig.update_xaxes(type='category') # <--- Это исправит вертикальное "схлопывание"
     st.plotly_chart(fig, use_container_width=True)
 
     # ── Сравнение последних двух результатов ────────────
