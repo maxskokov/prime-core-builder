@@ -4,6 +4,7 @@ import bcrypt
 import re
 import time
 import logging
+import hashlib
 
 # Настройка логирования
 logging.basicConfig(level=logging.ERROR)
@@ -28,9 +29,16 @@ def _hash_password(password: str) -> str:
     return bcrypt.hashpw(pw_bytes, salt).decode('utf-8')
 
 def _verify_password(password: str, hashed: str) -> bool:
-    """Проверяет пароль против хеша bcrypt."""
+    """Проверяет пароль против хеша bcrypt с поддержкой старого SHA256."""
     try:
-        return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        # Проверка Bcrypt
+        if hashed.startswith('$2b$') or hashed.startswith('$2a$'):
+            return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        
+        # Фолбек на старый SHA256
+        salt = "prime_core_builder_v1_salt_2024"
+        old_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+        return old_hash == hashed
     except Exception:
         return False
 
@@ -88,9 +96,15 @@ def login(email: str, password: str) -> tuple[bool, str, int | None]:
             return False, "Пользователь не найден.", None
             
         user = res.data[0]
-        # Проверяем пароль (поддержка старых SHA256 хешей для плавного перехода, если нужно, 
-        # но здесь мы просто переходим на bcrypt)
         if _verify_password(password, user["password_hash"]):
+            # Автоматическое обновление хеша до Bcrypt, если он старый
+            if not (user["password_hash"].startswith('$2b$') or user["password_hash"].startswith('$2a$')):
+                try:
+                    new_hash = _hash_password(password)
+                    sb.table("users").update({"password_hash": new_hash}).eq("id", user["id"]).execute()
+                except Exception as e:
+                    logger.error(f"Hash upgrade error: {str(e)}")
+            
             return True, "Успешный вход!", user["id"]
         
         return False, "Неверный пароль.", None
