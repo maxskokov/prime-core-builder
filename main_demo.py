@@ -63,30 +63,24 @@ def show_footer():
 # ─── Инициализация состояний ────────────────────────────────────────────────
 if "user_id" not in st.session_state: st.session_state.user_id = None
 if "user_email" not in st.session_state: st.session_state.user_email = None
-if "init_done" not in st.session_state: st.session_state.init_done = False
 
-cookie_manager = stx.CookieManager()
+# Инициализируем CookieManager один раз
+cookie_manager = stx.CookieManager(key="global_cookie_manager")
 
-# Авто-вход через куки (сложная логика ожидания синхронизации)
-if not st.session_state.init_done:
-    cookies = cookie_manager.get_all()
-    if cookies:
-        c_id = cookies.get("user_id")
-        if c_id and st.session_state.user_id is None:
+# Пытаемся восстановить сессию только один раз при старте
+if st.session_state.user_id is None:
+    all_cookies = cookie_manager.get_all()
+    # Если куки загрузились
+    if all_cookies:
+        c_id = all_cookies.get("user_id")
+        if c_id:
             try:
                 u = auth.get_user_by_id(int(c_id))
                 if u:
                     st.session_state.user_id = u["id"]
                     st.session_state.user_email = u["email"]
+                    st.rerun()
             except: pass
-        st.session_state.init_done = True
-        st.rerun()
-    else:
-        # Если куки еще не загружены, даем им полсекунды (JS-виджету нужно время)
-        import time
-        time.sleep(0.5) 
-        st.session_state.init_done = True
-        st.rerun()
 
 # ─── Экран авторизации ──────────────────────────────────────────────────────
 @st.dialog("Вход в систему")
@@ -100,7 +94,7 @@ def show_auth_screen():
             success, msg, u_id = auth.login(email, password)
             if success:
                 st.session_state.user_id, st.session_state.user_email = u_id, email
-                cookie_manager.set("user_id", str(u_id), key="set_id_login")
+                cookie_manager.set("user_id", str(u_id), key="cookie_set_login")
                 st.rerun()
             else: st.error(msg)
     else:
