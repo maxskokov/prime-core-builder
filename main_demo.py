@@ -63,27 +63,30 @@ def show_footer():
 # ─── Инициализация состояний ────────────────────────────────────────────────
 if "user_id" not in st.session_state: st.session_state.user_id = None
 if "user_email" not in st.session_state: st.session_state.user_email = None
-if "cookies_initialized" not in st.session_state: st.session_state.cookies_initialized = False
+if "init_done" not in st.session_state: st.session_state.init_done = False
 
 cookie_manager = stx.CookieManager()
 
-# Авто-вход через куки
-# Мы ждем, пока компонент CookieManager будет готов
-cookies = cookie_manager.get_all()
-
-if not st.session_state.cookies_initialized and cookies:
-    c_id = cookies.get("user_id")
-    if c_id and st.session_state.user_id is None:
-        try:
-            u = auth.get_user_by_id(int(c_id))
-            if u:
-                st.session_state.user_id = u["id"]
-                st.session_state.user_email = u["email"]
-                st.session_state.cookies_initialized = True
-                st.rerun()
-        except Exception as e:
-            print(f"Session recovery error: {e}")
-    st.session_state.cookies_initialized = True
+# Авто-вход через куки (сложная логика ожидания синхронизации)
+if not st.session_state.init_done:
+    cookies = cookie_manager.get_all()
+    if cookies:
+        c_id = cookies.get("user_id")
+        if c_id and st.session_state.user_id is None:
+            try:
+                u = auth.get_user_by_id(int(c_id))
+                if u:
+                    st.session_state.user_id = u["id"]
+                    st.session_state.user_email = u["email"]
+            except: pass
+        st.session_state.init_done = True
+        st.rerun()
+    else:
+        # Если куки еще не загружены, даем им полсекунды (JS-виджету нужно время)
+        import time
+        time.sleep(0.5) 
+        st.session_state.init_done = True
+        st.rerun()
 
 # ─── Экран авторизации ──────────────────────────────────────────────────────
 @st.dialog("Вход в систему")
