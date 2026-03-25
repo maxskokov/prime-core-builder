@@ -1,162 +1,113 @@
 import streamlit as st
 
 def show_about_tab():
-    # ── OBSIDIAN PULSE 7.0: ГЕОМЕТРИЯ И РУССКИЙ ЯЗЫК ──
-    # Исправляем выравнивание карточек и переводим интерфейс.
+    # ── ПЕРЕРАБОТАННАЯ ВКЛАДКА "О НЕЙРОСЕТИ" ──
+    # Простой текст, плавные смены, никаких лишних слов.
     
     st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap');
-.stApp { background-color: #0e0e0f; overflow-x: hidden; }
-.obsidian-section {
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-padding: 100px 30px;
-position: relative;
-text-align: center;
-view-timeline-name: --obsidian;
-view-timeline-axis: block;
+/* Чистый темный фон */
+.stApp { background-color: #050505; }
+
+/* Скрываем стандартные элементы */
+#MainMenu, footer, header { visibility: hidden; }
+
+/* Контейнеры секций */
+.about-section {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.pulse-orb {
-position: absolute;
-width: 50vw;
-height: 50vw;
-background: radial-gradient(circle, rgba(0, 240, 255, 0.07) 0%, transparent 70%);
-filter: blur(120px);
-z-index: -1;
-pointer-events: none;
+
+.about-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #00d1ff, #a200ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
 }
-.obsidian-h1 {
-font-family: 'Inter', sans-serif;
-font-size: clamp(3rem, 7vw, 6rem);
-font-weight: 900;
-line-height: 0.9;
-letter-spacing: -0.04em;
-color: #e5e2e3;
-margin-bottom: 24px;
-margin-left: auto;
-margin-right: auto;
+
+.about-p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    color: #b9cacb;
+    max-width: 750px;
+    line-height: 1.6;
+    font-weight: 300;
 }
-.obsidian-label {
-font-family: 'Space Grotesk', sans-serif;
-text-transform: uppercase;
-letter-spacing: 0.4em;
-font-size: 0.8rem;
-color: #00f0ff;
-margin-bottom: 24px;
-font-weight: 500;
+
+.tech-detail {
+    margin-top: 40px;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.3em;
+    font-size: 0.9rem;
+    color: #4b5563;
+    text-transform: uppercase;
 }
-.obsidian-p {
-font-family: 'Inter', sans-serif;
-font-size: 1.25rem;
-color: #b9cacb;
-max-width: 750px;
-line-height: 1.6;
-font-weight: 300;
-margin-left: auto;
-margin-right: auto;
+
+.highlight {
+    color: #00d1ff;
+    font-weight: 600;
 }
-.bento-layout {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-gap: 30px;
-max-width: 1100px;
-width: 100%;
-margin-top: 60px;
-margin-left: auto;
-margin-right: auto;
+
+/* Анимация плавного появления */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.bento-box {
-background: rgba(28, 27, 28, 0.4);
-backdrop-filter: blur(40px);
-border: 1px solid rgba(255, 255, 255, 0.05);
-border-radius: 40px;
-padding: 50px;
-text-align: left;
-transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-animation: reveal-obsidian both;
-animation-timeline: --obsidian;
-animation-range: entry 10% cover 40%;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
+
+.about-section {
+    animation: fadeInUp 1.2s ease-out both;
 }
-.bento-box:hover {
-background: rgba(35, 34, 35, 0.6);
-border-color: rgba(0, 240, 255, 0.2);
-transform: translateY(-10px);
-}
-@keyframes reveal-obsidian {
-0% { opacity: 0; transform: translateY(80px) scale(0.95); }
-100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-.glow-edge { position: relative; overflow: hidden; }
-.glow-edge::after {
-content: "";
-position: absolute;
-top: 0; left: 0; right: 0; height: 1px;
-background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4), transparent);
-}
-.shield-pulse {
-width: 60px; height: 60px;
-background: url('https://img.icons8.com/wired/64/00f0ff/shield--v1.png') no-repeat center/contain;
-margin-bottom: 24px;
-filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.4));
-animation: pulse-shield 3s infinite;
-}
-@keyframes pulse-shield { 0%, 100% {opacity: 1;} 50% {opacity: 0.6;} }
+
 </style>
-<div class="obsidian-section">
-<div class="pulse-orb" style="top: -10%; left: 20%;"></div>
-<div class="lottie-container" style="width: 300px; height: 300px; margin-bottom: 20px;">
-    <iframe src="https://lottie.host/embed/84c3b7f1-2856-4b8c-85a0-044439c719e5/f1vB67z87H.json" style="border: none; width: 100%; height: 100%;"></iframe>
+
+<!-- Секция 1: Главная -->
+<div class="about-section">
+    <div class="about-title">Простота и <br>Аналитика.</div>
+    <p class="about-p">
+        Prime Core Builder — это персональный помощник, который анализирует ваш текст и помогает увидеть объективную картину ваших сильных сторон.
+    </p>
+    <div class="tech-detail">MODERN AI ARCHITECTURE</div>
 </div>
-<div class="obsidian-label">Интеллект Будущего</div>
-<h1 class="obsidian-h1">Prime Core <br>Builder.</h1>
-<p class="obsidian-p">Симбиоз нейросетевого анализа и психометрики, созданный для раскрытия вашего истинного потенциала через текст.</p>
+
+<!-- Секция 2: Безопасность -->
+<div class="about-section">
+    <div class="about-title">Надежная <br>Защита.</div>
+    <p class="about-p">
+        Безопасность — наш приоритет. Все пароли пользователей шифруются методом <span class="highlight">2FJFJS</span>. Мы гарантируем полную приватность ваших данных.
+    </p>
+    <div class="tech-detail">PROPRIETARY ENCRYPTION</div>
 </div>
-<div class="obsidian-section">
-<div class="obsidian-label">Архитектура Системы</div>
-<div class="bento-layout">
-<div class="bento-box glow-edge" style="grid-column: span 2;">
-<div>
-<h3 class="obsidian-h1" style="font-size: 2.5rem; text-align: left; margin-bottom: 16px;">Ядро NLP</h3>
-<p class="obsidian-p" style="text-align: left; margin: 0;">Семантический анализ в реальном времени. Мы понимаем не только слова, но и тональность, контекст и глубинные психологические паттерны вашего текста.</p>
+
+<!-- Секция 3: Анализ -->
+<div class="about-section">
+    <div class="about-title">Точный <br>Результат.</div>
+    <p class="about-p">
+        Нейросеть выявляет в тексте скрытые паттерны <span class="highlight">лидерства</span>, <span class="highlight">дисциплины</span> и <span class="highlight">эмпатии</span>. Объективный взгляд на ваши таланты без искажений.
+    </p>
+    <div class="tech-detail">CORE TRAIT ANALYZER</div>
 </div>
+
+<!-- Секция 4: Инфраструктура -->
+<div class="about-section">
+    <div class="about-title">Облачная <br>Синхронизация.</div>
+    <p class="about-p">
+        Благодаря системе <span class="highlight">Supabase</span> ваши результаты мгновенно сохраняются и доступны с любого устройства — будь то смартфон или компьютер.
+    </p>
+    <div class="tech-detail">HYBRID CLOUD STORAGE</div>
 </div>
-<div class="bento-box">
-<div>
-<h3 class="obsidian-h1" style="font-size: 2.5rem; text-align: left; margin-bottom: 16px;">Скорость</h3>
-<p class="obsidian-p" style="text-align: left; margin: 0;">Выполнение сложнейших алгоритмов за миллисекунды. Технологии, которые не заставляют ждать.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="obsidian-section" style="background-color: #0e0e0f;">
-<div class="pulse-orb" style="bottom: 10%; right: 10%; background: radial-gradient(circle, rgba(157, 5, 255, 0.05) 0%, transparent 70%);"></div>
-<div class="shield-pulse" style="margin-left: auto; margin-right: auto;"></div>
-<div class="obsidian-label">Безопасность Данных</div>
-<h1 class="obsidian-h1" style="font-size: 4rem;">Промышленная <br>Защита.</h1>
-<div class="bento-layout">
-<div class="bento-box">
-<div>
-<h2 class="obsidian-h1" style="font-size: 2rem; text-align: left;">Протокол AES</h2>
-<p class="obsidian-p" style="text-align: left; margin: 0;">Ваши данные зашифрованы по стандартам высшего уровня. Приватность — это не опция, а фундамент нашей системы.</p>
-</div>
-</div>
-<div class="bento-box">
-<div>
-<h2 class="obsidian-h1" style="font-size: 2rem; text-align: left;">Анонимность</h2>
-<p class="obsidian-p" style="text-align: left; margin: 0;">Полная анонимизация входящих потоков. Мы анализируем смыслы, никогда не собирая ваши персональные данные.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="obsidian-section">
-<h1 class="obsidian-h1" style="font-size: 3rem; color: #4b5563;">Prime Core Architect</h1>
-<div style="margin-top: 32px; font-family: 'Space Grotesk', sans-serif; color: #313031; letter-spacing: 0.5em;">ИНТЕЛЛЕКТ БЕЗ КОМПРОМИССОВ</div>
+
+<div style="height: 10vh; text-align: center; color: #1f2937; padding: 20px;">
+    PRIME CORE BUILDER (C) 2026
 </div>
 """, unsafe_allow_html=True)
