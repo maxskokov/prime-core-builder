@@ -54,7 +54,7 @@ def show_clear_history_tab(user_id):
     confirm = st.checkbox("Я понимаю последствия")
 
     if st.button("🗑️ Удалить всю историю", use_container_width=True, disabled=not confirm):
-        count = history.clear_history(user_id)
+        count = history.delete_user_history(user_id)
         if count > 0:
             st.success(f"✅ Удалено записей: {count}")
             st.rerun()

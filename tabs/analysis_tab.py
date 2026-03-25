@@ -54,7 +54,8 @@ def show_analysis_tab(user_id):
         st.session_state.current_text = text_input
         
         if user_id and "message" not in scores:
-            history.save_scores(user_id, scores, text_input)
+            overall = scores.get("_meta", {}).get("overall_score", 50.0)
+            history.save_score(user_id, text_input, scores, overall)
             st.session_state.analysis_saved = True
         else:
             st.session_state.analysis_saved = False

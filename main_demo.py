@@ -1,16 +1,15 @@
 import streamlit as st
 import plotly.graph_objects as go
-import html as html_lib
-import extra_streamlit_components as stx
 import auth
 import history
 
-# Импортируем наши новые модули вкладок
+# Импортируем модули вкладок
 from tabs import analysis_tab, history_tab, dashboard_tab, about_tab
 
 # ─── Настройки страницы ─────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Prime Core Builder",
+    page_icon="💠",
     layout="centered",
     initial_sidebar_state="expanded",
 )
@@ -45,11 +44,6 @@ st.markdown("""
         transition: all 0.3s ease !important;
     }
     div.stButton > button:hover { background: rgba(0, 209, 255, 0.15) !important; transform: translateY(-2px); }
-    .score-card {
-        background: rgba(25, 30, 40, 0.5); backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #00d1ff;
-        border-radius: 12px; padding: 18px; margin-bottom: 15px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -65,22 +59,22 @@ if "user_id" not in st.session_state: st.session_state.user_id = None
 if "user_email" not in st.session_state: st.session_state.user_email = None
 
 # Инициализируем CookieManager один раз
-cookie_manager = stx.CookieManager(key="global_cookie_manager")
+# cookie_manager = stx.CookieManager(key="global_cookie_manager") # Removed as per instruction
 
 # Пытаемся восстановить сессию только один раз при старте
-if st.session_state.user_id is None:
-    all_cookies = cookie_manager.get_all()
-    # Если куки загрузились
-    if all_cookies:
-        c_id = all_cookies.get("user_id")
-        if c_id:
-            try:
-                u = auth.get_user_by_id(int(c_id))
-                if u:
-                    st.session_state.user_id = u["id"]
-                    st.session_state.user_email = u["email"]
-                    st.rerun()
-            except: pass
+# if st.session_state.user_id is None: # Removed as per instruction
+#     all_cookies = cookie_manager.get_all() # Removed as per instruction
+#     # Если куки загрузились # Removed as per instruction
+#     if all_cookies: # Removed as per instruction
+#         c_id = all_cookies.get("user_id") # Removed as per instruction
+#         if c_id: # Removed as per instruction
+#             try: # Removed as per instruction
+#                 u = auth.get_user_by_id(int(c_id)) # Removed as per instruction
+#                 if u: # Removed as per instruction
+#                     st.session_state.user_id = u["id"] # Removed as per instruction
+#                     st.session_state.user_email = u["email"] # Removed as per instruction
+#                     st.rerun() # Removed as per instruction
+#             except: pass # Removed as per instruction
 
 # ─── Экран авторизации ──────────────────────────────────────────────────────
 @st.dialog("Вход в систему")
@@ -94,7 +88,7 @@ def show_auth_screen():
             success, msg, u_id = auth.login(email, password)
             if success:
                 st.session_state.user_id, st.session_state.user_email = u_id, email
-                cookie_manager.set("user_id", str(u_id), key="cookie_set_login")
+                # cookie_manager.set("user_id", str(u_id), key="cookie_set_login") # Removed as per instruction
                 st.rerun()
             else: st.error(msg)
     else:
@@ -123,7 +117,6 @@ with st.sidebar:
     if st.session_state.user_id and st.sidebar.button("Выйти"):
         st.session_state.user_id = None
         st.session_state.user_email = None
-        cookie_manager.delete("user_id", key="logout_btn")
         st.rerun()
 
 # ─── Рендеринг вкладок ─────────────────────────────────────────────────────
