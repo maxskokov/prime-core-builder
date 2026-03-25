@@ -1,8 +1,13 @@
 import streamlit as st
 from supabase import create_client, Client
-import hashlib
+import bcrypt
 import re
 import time
+import logging
+
+# Настройка логирования
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 # ─── Инициализация Supabase ────────────────────────────────────────────────
 
@@ -17,9 +22,17 @@ def _get_supabase() -> Client | None:
         return None
 
 def _hash_password(password: str) -> str:
-    """Хеширует пароль для хранения в БД."""
-    salt = "prime_core_builder_v1_salt_2024"
-    return hashlib.sha256((password + salt).encode()).hexdigest()
+    """Хеширует пароль с использованием bcrypt."""
+    pw_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pw_bytes, salt).decode('utf-8')
+
+def _verify_password(password: str, hashed: str) -> bool:
+    """Проверяет пароль против хеша bcrypt."""
+    try:
+        return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+    except Exception:
+        return False
 
 # ─── Функции управления пользователями ─────────────────────────────────────
 
@@ -58,7 +71,8 @@ def register(email: str, password: str) -> tuple[bool, str]:
         sb.table("users").insert(new_user).execute()
         return True, "Регистрация успешна! Теперь вы можете войти."
     except Exception as e:
-        return False, f"Ошибка при регистрации: {str(e)}"
+        logger.error(f"Registration error: {str(e)}")
+        return False, "Ошибка при регистрации. Пожалуйста, попробуйте позже."
 
 def login(email: str, password: str) -> tuple[bool, str, int | None]:
     """Проверяет данные пользователя в Supabase."""
@@ -74,12 +88,15 @@ def login(email: str, password: str) -> tuple[bool, str, int | None]:
             return False, "Пользователь не найден.", None
             
         user = res.data[0]
-        if user["password_hash"] == _hash_password(password):
+        # Проверяем пароль (поддержка старых SHA256 хешей для плавного перехода, если нужно, 
+        # но здесь мы просто переходим на bcrypt)
+        if _verify_password(password, user["password_hash"]):
             return True, "Успешный вход!", user["id"]
         
         return False, "Неверный пароль.", None
     except Exception as e:
-        return False, f"Ошибка входа: {str(e)}", None
+        logger.error(f"Login error: {str(e)}")
+        return False, "Ошибка входа. Пожалуйста, попробуйте позже.", None
 
 def get_user_by_id(user_id: int) -> dict | None:
     """Получает данные пользователя по ID."""

@@ -11,3 +11,4 @@ pymorphy2-dicts-ru
 watchdog
 extra-streamlit-components
 supabase
+bcrypt

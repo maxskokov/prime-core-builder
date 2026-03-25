@@ -23,10 +23,11 @@ def save_score(user_id: int, text_preview: str, full_analysis: dict, score: floa
     
     try:
         # Убеждаемся, что text_preview это строка
-        preview = str(text_preview)
+        preview = str(text_preview).strip()
+        display_preview = (preview[:197] + "...") if len(preview) > 200 else preview
         data = {
             "user_id": user_id,
-            "text_preview": preview[:200] + ("..." if len(preview) > 200 else ""),
+            "text_preview": display_preview,
             "full_analysis": json.dumps(full_analysis, ensure_ascii=False),
             "score": float(score),
             "created_at": datetime.now().isoformat()
@@ -34,7 +35,8 @@ def save_score(user_id: int, text_preview: str, full_analysis: dict, score: floa
         sb.table("history").insert(data).execute()
         return True
     except Exception as e:
-        st.error(f"Ошибка сохранения в облако: {str(e)}")
+        import logging
+        logging.error(f"Error saving to Supabase: {str(e)}")
         return False
 
 def get_user_scores(user_id: int):

@@ -29,10 +29,17 @@ def show_history_tab(user_id):
                 
                 # Отображаем характеристики
                 traits = {k: v for k, v in analysis.items() if k != "_meta" and isinstance(v, (int, float))}
-                cols = st.columns(3)
-                for i, (trait, val) in enumerate(traits.items()):
-                    with cols[i % 3]:
-                        st.metric(trait, val)
+                
+                st.markdown("<div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px;'>", unsafe_allow_html=True)
+                for trait, val in traits.items():
+                    color = "#00d1ff" if val >= 70 else "#f093fb" if val >= 40 else "#6b7280"
+                    st.markdown(f"""
+                        <div style='background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid {color};'>
+                            <div style='font-size: 0.8rem; color: #9ca3af;'>{trait}</div>
+                            <div style='font-size: 1.2rem; font-weight: 600; color: {color};'>{val}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.info("Детальный анализ недоступен для этой записи.")
 

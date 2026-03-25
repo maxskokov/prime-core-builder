@@ -38,9 +38,9 @@ def show_about_tab():
 
 .about-p {
     font-family: 'Inter', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #b9cacb;
-    max-width: 750px;
+    max-width: 800px;
     line-height: 1.6;
     font-weight: 300;
 }
@@ -84,9 +84,9 @@ def show_about_tab():
 <div class="about-section">
     <div class="about-title">Надежная <br>Защита.</div>
     <p class="about-p">
-        Безопасность — наш приоритет. Все пароли пользователей шифруются методом <span class="highlight">2FJFJS</span>. Мы гарантируем полную приватность ваших данных.
+        Безопасность — наш приоритет. Все пароли пользователей хешируются с использованием современного алгоритма <span class="highlight">Bcrypt</span>. Мы гарантируем полную приватность ваших данных.
     </p>
-    <div class="tech-detail">PROPRIETARY ENCRYPTION</div>
+    <div class="tech-detail">MODERN HASHING STANDARDS</div>
 </div>
 
 <!-- Секция 3: Анализ -->
