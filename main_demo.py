@@ -63,20 +63,27 @@ def show_footer():
 # ─── Инициализация состояний ────────────────────────────────────────────────
 if "user_id" not in st.session_state: st.session_state.user_id = None
 if "user_email" not in st.session_state: st.session_state.user_email = None
-if "cookie_manager" not in st.session_state: st.session_state.cookie_manager = stx.CookieManager()
+if "cookies_initialized" not in st.session_state: st.session_state.cookies_initialized = False
 
-cookie_manager = st.session_state.cookie_manager
+cookie_manager = stx.CookieManager()
 
-# Авто-вход
-if st.session_state.user_id is None:
-    c_id = cookie_manager.get("user_id")
-    if c_id:
+# Авто-вход через куки
+# Мы ждем, пока компонент CookieManager будет готов
+cookies = cookie_manager.get_all()
+
+if not st.session_state.cookies_initialized and cookies:
+    c_id = cookies.get("user_id")
+    if c_id and st.session_state.user_id is None:
         try:
             u = auth.get_user_by_id(int(c_id))
             if u:
-                st.session_state.user_id, st.session_state.user_email = u["id"], u["email"]
+                st.session_state.user_id = u["id"]
+                st.session_state.user_email = u["email"]
+                st.session_state.cookies_initialized = True
                 st.rerun()
-        except: pass
+        except Exception as e:
+            print(f"Session recovery error: {e}")
+    st.session_state.cookies_initialized = True
 
 # ─── Экран авторизации ──────────────────────────────────────────────────────
 @st.dialog("Вход в систему")
@@ -117,8 +124,9 @@ with st.sidebar:
     selected_tab = st.sidebar.radio("Навигация:", tabs)
     
     if st.session_state.user_id and st.sidebar.button("Выйти"):
-        st.session_state.user_id = st.session_state.user_email = None
-        cookie_manager.delete("user_id", key="logout")
+        st.session_state.user_id = None
+        st.session_state.user_email = None
+        cookie_manager.delete("user_id", key="logout_btn")
         st.rerun()
 
 # ─── Рендеринг вкладок ─────────────────────────────────────────────────────
